@@ -57,3 +57,9 @@ Fases 0–5 implementadas. Pendentes: instaladores (`npm run tauri build`) e íc
 - `preparador --mcp`: ponte stdio → HTTP para o Claude Desktop; abre o app se estiver fechado.
 - Ferramentas e prompts em `src/lib/mcp.ts` (mesma lógica das telas). Os prompts da tela também são prompts MCP, com instrução para enviar o JSON pela ferramenta de importação.
 - Ligar e copiar a configuração: Ajustes → Conectar com agentes de IA.
+
+## Versões e instaladores
+- Gerados localmente com `scripts/release.sh` (AppImage + Windows NSIS por compilação cruzada com cargo-xwin; sem .msi).
+- `scripts/release.sh --versao X.Y.Z` troca a versão; depois do commit, `scripts/release.sh --publicar` cria a tag, faz push e sobe os instaladores numa release em rascunho via `gh`.
+- Instaladores não vão para o git (`release/` no .gitignore); ficam anexados às Releases.
+- GitHub Actions: só `testes.yml`. Página: GitHub Pages servindo `docs/` direto da branch (Settings → Pages → Deploy from a branch → main /docs).
