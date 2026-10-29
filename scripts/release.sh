@@ -7,7 +7,10 @@
 #   scripts/release.sh --versao 0.2.0   troca a versão em package.json, tauri.conf.json e Cargo.toml antes
 #   scripts/release.sh --publicar       depois de compilar: cria a tag vX.Y.Z, faz push e anexa os
 #                                       instaladores a uma release em rascunho (precisa do gh logado)
+#   scripts/release.sh --so-pagina      só atualiza os botões de download de docs/index.html
 #
+# Os botões de download da página (docs/index.html) são atualizados para os arquivos desta versão;
+# com --publicar, essa mudança entra num commit antes da tag.
 # O Windows é compilado por compilação cruzada (cargo-xwin + NSIS). O .msi não é gerado: o WiX só roda no Windows.
 # Os instaladores ficam em release/vX.Y.Z/ (fora do git) e vão para a Release, não para os commits.
 set -euo pipefail
@@ -16,6 +19,7 @@ cd "$(dirname "$0")/.."
 LINUX=1
 WINDOWS=1
 PUBLICAR=0
+SO_PAGINA=0
 NOVA_VERSAO=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -23,7 +27,8 @@ while [ $# -gt 0 ]; do
     --so-windows) LINUX=0 ;;
     --publicar) PUBLICAR=1 ;;
     --versao) NOVA_VERSAO="${2:?informe a versão, ex.: --versao 0.2.0}"; shift ;;
-    -h|--help) sed -n '2,13p' "$0"; exit 0 ;;
+    --so-pagina) LINUX=0; WINDOWS=0; SO_PAGINA=1 ;;
+    -h|--help) sed -n '2,/^set /{/^#/p}' "$0"; exit 0 ;;
     *) echo "Opção desconhecida: $1 (veja --help)"; exit 1 ;;
   esac
   shift
@@ -85,6 +90,44 @@ if [ $PUBLICAR = 1 ]; then
 fi
 echo "Tudo certo. Versão $VERSAO."
 
+# ---------- página ----------
+# Escreve em docs/index.html os links diretos para os instaladores desta versão.
+atualizar_pagina() {
+  local repo
+  repo=$(git remote get-url origin 2>/dev/null | sed -nE 's#.*github\.com[:/]([^/]+/[^/]+)$#\1#p' | sed 's/\.git$//' || true)
+  [ -n "$repo" ] || repo=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)
+  if [ -z "$repo" ]; then
+    echo "Aviso: repositório do GitHub não encontrado (sem 'git remote origin'); página não atualizada."
+    return
+  fi
+  etapa "Atualizando downloads da página ($repo, $TAG)"
+  node -e '
+    const fs = require("fs");
+    const [repo, tag, versao, win, lin] = process.argv.slice(1);
+    const f = "docs/index.html";
+    const base = `https://github.com/${repo}`;
+    const arq = (nome) => `${base}/releases/download/${tag}/${nome}`;
+    let s = fs.readFileSync(f, "utf8");
+    const href = (id, url) => {
+      const re = new RegExp(`(id="${id}" href=")[^"]*(")`);
+      if (!re.test(s)) throw new Error(`id "${id}" não encontrado em ${f}`);
+      s = s.replace(re, `$1${url}$2`);
+    };
+    href("link-repo", base);
+    href("link-releases", `${base}/releases/latest`);
+    if (win === "1") href("dl-windows", arq(`Preparador_${versao}_x64-setup.exe`));
+    if (lin === "1") href("dl-linux", arq(`Preparador_${versao}_amd64.AppImage`));
+    s = s.replace(/(id="dl-aviso">)[^<]*(<\/p>)/, `$1Versão ${tag} · Windows 10 e 11, Linux 64 bits$2`);
+    fs.writeFileSync(f, s);
+  ' "$repo" "$TAG" "$VERSAO" "$1" "$2"
+  echo "Links apontam para $TAG."
+}
+
+if [ $SO_PAGINA = 1 ]; then
+  atualizar_pagina 1 1
+  exit 0
+fi
+
 # ---------- testes ----------
 [ -d node_modules ] || { etapa "Instalando dependências do npm"; npm ci; }
 etapa "Type-check e testes"
@@ -108,9 +151,15 @@ fi
 etapa "Instaladores em $SAIDA"
 ls -lh "$SAIDA"
 
+atualizar_pagina "$WINDOWS" "$LINUX"
+
 # ---------- publicar ----------
 if [ $PUBLICAR = 1 ]; then
   etapa "Publicando $TAG"
+  if ! git diff --quiet -- docs/index.html; then
+    git add docs/index.html
+    git commit -m "Página: downloads da versão $TAG"
+  fi
   git tag -a "$TAG" -m "Preparador $TAG"
   git push origin HEAD
   git push origin "$TAG"
@@ -121,4 +170,5 @@ if [ $PUBLICAR = 1 ]; then
 \`SHA256SUMS.txt\` traz os checksums para conferir os downloads."
   echo
   echo "Rascunho criado. Revise e publique em: $(gh release view "$TAG" --json url -q .url)"
+  echo "Os botões da página só funcionam depois que o rascunho for publicado."
 fi

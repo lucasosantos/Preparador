@@ -182,11 +182,12 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
           O Preparador monta seu plano a partir do PDF do edital, organiza o que estudar a cada dia, agenda revisões,
           guarda aulas do YouTube e questões por assunto. Você usa a IA que já tem: ChatGPT, Claude, Gemini.
         </p>
+        <!-- links de download atualizados por scripts/release.sh -->
         <div class="botoes">
-          <a class="btn primario" id="dl-windows" href="#instalar">Baixar para Windows <small>.exe</small></a>
-          <a class="btn" id="dl-linux" href="#instalar">Baixar para Linux <small>AppImage</small></a>
+          <a class="btn primario" id="dl-windows" href="https://github.com/lucasosantos/Preparador/releases/download/v0.1.0/Preparador_0.1.0_x64-setup.exe">Baixar para Windows <small>.exe</small></a>
+          <a class="btn" id="dl-linux" href="https://github.com/lucasosantos/Preparador/releases/download/v0.1.0/Preparador_0.1.0_amd64.AppImage">Baixar para Linux <small>AppImage</small></a>
         </div>
-        <p class="aviso-dl muted" id="dl-aviso"></p>
+        <p class="aviso-dl muted" id="dl-aviso">Versão v0.1.0 · Windows 10 e 11, Linux 64 bits</p>
         <div class="selos">
           <span class="selo">gratuito</span>
           <span class="selo">seus dados ficam no seu computador</span>
@@ -277,7 +278,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
       <div class="cabeca">
         <div class="eyebrow">Instalar</div>
         <h2>Baixe, abra e comece</h2>
-        <p>Os instaladores ficam na página de <a id="link-releases" href="#">versões do projeto</a>.</p>
+        <p>Os instaladores ficam na página de <a id="link-releases" href="https://github.com/lucasosantos/Preparador/releases/latest">versões do projeto</a>.</p>
       </div>
       <div class="duas">
         <div>
@@ -476,7 +477,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
 <footer>
   <div class="wrap">
     <span>Preparador · organizador de estudos de código aberto</span>
-    <a id="link-repo" href="#">Código-fonte</a>
+    <a id="link-repo" href="https://github.com/lucasosantos/Preparador">Código-fonte</a>
   </div>
 </footer>
 
@@ -493,41 +494,6 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
       raiz.dataset.theme = escuro ? "light" : "dark";
       try { localStorage.setItem("tema", raiz.dataset.theme); } catch (e) {}
     });
-  })();
-
-  // Downloads: descobre o repositório pelo endereço do GitHub Pages (dono.github.io/repositorio)
-  // e aponta para os arquivos da última versão publicada.
-  (function () {
-    var host = location.hostname;
-    var aviso = document.getElementById("dl-aviso");
-    if (!/\.github\.io$/.test(host)) {
-      aviso.textContent = "Os instaladores ficam na página de versões do repositório no GitHub.";
-      return;
-    }
-    var dono = host.split(".")[0];
-    var repo = location.pathname.split("/").filter(Boolean)[0] || dono + ".github.io";
-    var base = "https://github.com/" + dono + "/" + repo;
-    var versoes = base + "/releases/latest";
-    document.getElementById("link-repo").href = base;
-    document.getElementById("link-releases").href = versoes;
-    var win = document.getElementById("dl-windows");
-    var lin = document.getElementById("dl-linux");
-    win.href = versoes;
-    lin.href = versoes;
-    fetch("https://api.github.com/repos/" + dono + "/" + repo + "/releases/latest")
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (rel) {
-        if (!rel || !rel.assets) {
-          aviso.textContent = "Ainda não há versão publicada. Acompanhe a página de versões.";
-          return;
-        }
-        rel.assets.forEach(function (a) {
-          if (/-setup\.exe$/i.test(a.name)) win.href = a.browser_download_url;
-          if (/\.AppImage$/i.test(a.name)) lin.href = a.browser_download_url;
-        });
-        aviso.textContent = "Versão " + rel.tag_name + ".";
-      })
-      .catch(function () {});
   })();
 </script>
 </body>
