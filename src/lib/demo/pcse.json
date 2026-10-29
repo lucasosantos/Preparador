@@ -1,0 +1,2099 @@
+{
+ "plano": {
+  "schema": "preparador.plano/1",
+  "objetivo": {
+   "tipo": "edital",
+   "nome": "PC/SE Oficial Investigador",
+   "provas": [
+    {
+     "id": "pcse",
+     "nome": "Polícia Civil de Sergipe – Oficial Investigador",
+     "banca": "Cebraspe",
+     "dataProva": null,
+     "situacao": "previsto",
+     "previsao": "1º semestre de 2027",
+     "editalBase": "PC/SE 2021 – Agente e Escrivão (Cebraspe)"
+    }
+   ]
+  },
+  "materias": [
+   {
+    "id": "port",
+    "nome": "Língua Portuguesa",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "port-01",
+      "nome": "Interpretação de textos",
+      "prioridade": 2
+     },
+     {
+      "id": "port-02",
+      "nome": "Tipos e gêneros textuais",
+      "prioridade": 2
+     },
+     {
+      "id": "port-03",
+      "nome": "Ortografia e acentuação",
+      "prioridade": 2
+     },
+     {
+      "id": "port-04",
+      "nome": "Coesão textual",
+      "detalhe": "Referenciação, conectores, sequenciação",
+      "prioridade": 2
+     },
+     {
+      "id": "port-05",
+      "nome": "Tempos e modos verbais",
+      "prioridade": 2
+     },
+     {
+      "id": "port-06",
+      "nome": "Coordenação e subordinação",
+      "prioridade": 2
+     },
+     {
+      "id": "port-07",
+      "nome": "Pontuação",
+      "prioridade": 2
+     },
+     {
+      "id": "port-08",
+      "nome": "Concordância verbal e nominal",
+      "prioridade": 2
+     },
+     {
+      "id": "port-09",
+      "nome": "Crase",
+      "prioridade": 2
+     },
+     {
+      "id": "port-10",
+      "nome": "Colocação pronominal",
+      "prioridade": 2
+     },
+     {
+      "id": "port-11",
+      "nome": "Reescrita de frases e parágrafos",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "atual",
+    "nome": "Atualidades e Sergipe",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "atual-01",
+      "nome": "Atualidades: segurança, política, economia",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-02",
+      "nome": "Índios em Sergipe",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-03",
+      "nome": "Ocupação e povoamento do território",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-04",
+      "nome": "Economias fundadoras e regiões geoeconômicas",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-05",
+      "nome": "Sociedade colonial e Sergipe na República",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-06",
+      "nome": "Clima, relevo, hidrografia e vegetação",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-07",
+      "nome": "População, rede urbana e Grande Aracaju",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-08",
+      "nome": "Sergipe contemporâneo: política e economia",
+      "prioridade": 2
+     },
+     {
+      "id": "atual-09",
+      "nome": "Cultura e educação em Sergipe",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "etica",
+    "nome": "Ética",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "etica-01",
+      "nome": "Ética e moral",
+      "prioridade": 2
+     },
+     {
+      "id": "etica-02",
+      "nome": "Princípios e valores",
+      "prioridade": 2
+     },
+     {
+      "id": "etica-03",
+      "nome": "Ética, democracia e cidadania",
+      "prioridade": 2
+     },
+     {
+      "id": "etica-04",
+      "nome": "Ética no setor público e função pública",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "dh",
+    "nome": "Direitos Humanos",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "dh-01",
+      "nome": "Teoria geral e características",
+      "prioridade": 2
+     },
+     {
+      "id": "dh-02",
+      "nome": "Afirmação histórica",
+      "prioridade": 2
+     },
+     {
+      "id": "dh-03",
+      "nome": "Responsabilidade do Estado",
+      "prioridade": 2
+     },
+     {
+      "id": "dh-04",
+      "nome": "Direitos humanos na CF",
+      "prioridade": 2
+     },
+     {
+      "id": "dh-05",
+      "nome": "Política Nacional de Direitos Humanos",
+      "prioridade": 2
+     },
+     {
+      "id": "dh-06",
+      "nome": "Tratados internacionais e a CF",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "rl",
+    "nome": "Raciocínio Lógico",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "rl-01",
+      "nome": "Proposições e conectivos",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-02",
+      "nome": "Tabelas-verdade",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-03",
+      "nome": "Equivalências e De Morgan",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-04",
+      "nome": "Diagramas lógicos e argumentação",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-05",
+      "nome": "Lógica de primeira ordem",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-06",
+      "nome": "Contagem e probabilidade",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-07",
+      "nome": "Conjuntos",
+      "prioridade": 2
+     },
+     {
+      "id": "rl-08",
+      "nome": "Problemas aritméticos, geométricos e matriciais",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "adm",
+    "nome": "Direito Administrativo",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "adm-01",
+      "nome": "Regime jurídico e princípios",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-02",
+      "nome": "Organização administrativa",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-03",
+      "nome": "Administração direta e indireta",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-04",
+      "nome": "Ato administrativo",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-05",
+      "nome": "Agentes públicos e Lei 2.148/1977",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-06",
+      "nome": "Poderes administrativos",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-07",
+      "nome": "Licitação",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-08",
+      "nome": "Controle da administração",
+      "prioridade": 2
+     },
+     {
+      "id": "adm-09",
+      "nome": "Responsabilidade civil do Estado",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "const",
+    "nome": "Direito Constitucional",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "const-01",
+      "nome": "Direitos e deveres individuais (art. 5º)",
+      "prioridade": 2
+     },
+     {
+      "id": "const-02",
+      "nome": "Remédios constitucionais",
+      "prioridade": 2
+     },
+     {
+      "id": "const-03",
+      "nome": "Direitos sociais",
+      "prioridade": 2
+     },
+     {
+      "id": "const-04",
+      "nome": "Nacionalidade",
+      "prioridade": 2
+     },
+     {
+      "id": "const-05",
+      "nome": "Direitos políticos e partidos",
+      "prioridade": 2
+     },
+     {
+      "id": "const-06",
+      "nome": "Poder Executivo",
+      "prioridade": 2
+     },
+     {
+      "id": "const-07",
+      "nome": "Segurança pública (art. 144)",
+      "prioridade": 2
+     },
+     {
+      "id": "const-08",
+      "nome": "Ordem social",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "penal",
+    "nome": "Direito Penal",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "penal-01",
+      "nome": "Princípios do Direito Penal",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-02",
+      "nome": "Lei penal no tempo e no espaço",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-03",
+      "nome": "Fato típico",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-04",
+      "nome": "Consumação e tentativa",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-05",
+      "nome": "Ilicitude e excludentes",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-06",
+      "nome": "Crimes contra a pessoa",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-07",
+      "nome": "Crimes contra o patrimônio",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-08",
+      "nome": "Crimes contra a fé pública",
+      "prioridade": 2
+     },
+     {
+      "id": "penal-09",
+      "nome": "Crimes contra a Administração Pública",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "proc",
+    "nome": "Processo Penal",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "proc-01",
+      "nome": "Inquérito policial",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-02",
+      "nome": "Provas: ônus, nulidade e local de crime",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-03",
+      "nome": "Reconhecimento, acareação e indícios",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-04",
+      "nome": "Busca e apreensão",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-05",
+      "nome": "Prisão em flagrante",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-06",
+      "nome": "Preventiva, temporária e domiciliar",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-07",
+      "nome": "Liberdade provisória e cautelares diversas",
+      "prioridade": 2
+     },
+     {
+      "id": "proc-08",
+      "nome": "Audiência de custódia",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "leg",
+    "nome": "Legislação Especial",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "leg-01",
+      "nome": "Lei de Drogas (11.343/2006)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-02",
+      "nome": "Abuso de Autoridade (13.869/2019)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-03",
+      "nome": "Tortura (9.455/1997)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-04",
+      "nome": "ECA (8.069/1990)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-05",
+      "nome": "Estatuto do Desarmamento (10.826/2003)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-06",
+      "nome": "Crimes Ambientais (9.605/1998)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-07",
+      "nome": "Identificação Criminal (12.037/2009)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-08",
+      "nome": "Prisão Temporária (7.960/1989)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-09",
+      "nome": "Lavagem de Dinheiro (9.613/1998)",
+      "prioridade": 2
+     },
+     {
+      "id": "leg-10",
+      "nome": "Lei Orgânica das Polícias Civis (14.735/2023)",
+      "detalhe": "Fora do edital 2021, provável no próximo",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "estat",
+    "nome": "Estatística",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "estat-01",
+      "nome": "Estatística descritiva",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-02",
+      "nome": "Medidas de posição e dispersão",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-03",
+      "nome": "Probabilidade e independência",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-04",
+      "nome": "Variáveis aleatórias e distribuições",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-05",
+      "nome": "Esperança e momentos",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-06",
+      "nome": "Lei dos grandes números e TCL",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-07",
+      "nome": "Distribuições amostrais",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-08",
+      "nome": "Estimação e intervalos de confiança",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-09",
+      "nome": "Testes de hipóteses",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-10",
+      "nome": "Regressão linear e ANOVA",
+      "prioridade": 2
+     },
+     {
+      "id": "estat-11",
+      "nome": "Técnicas de amostragem",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "cont",
+    "nome": "Contabilidade",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "cont-01",
+      "nome": "Conceitos e objetivos",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-02",
+      "nome": "Patrimônio e equação fundamental",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-03",
+      "nome": "Atos e fatos administrativos",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-04",
+      "nome": "Contas e plano de contas",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-05",
+      "nome": "Escrituração, competência e caixa",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-06",
+      "nome": "Operações: juros, tributos, folha, depreciação",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-07",
+      "nome": "Balancete de verificação",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-08",
+      "nome": "Balanço patrimonial",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-09",
+      "nome": "DRE",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-10",
+      "nome": "Lei 6.404/1976 e CPCs",
+      "prioridade": 2
+     },
+     {
+      "id": "cont-11",
+      "nome": "NBC TSP Estrutura Conceitual",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "info",
+    "nome": "Informática",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "info-01",
+      "nome": "Internet e intranet",
+      "prioridade": 2
+     },
+     {
+      "id": "info-02",
+      "nome": "Navegadores, e-mail e busca",
+      "prioridade": 2
+     },
+     {
+      "id": "info-03",
+      "nome": "Windows e LibreOffice",
+      "prioridade": 2
+     },
+     {
+      "id": "info-04",
+      "nome": "Microsoft Office",
+      "prioridade": 2
+     },
+     {
+      "id": "info-05",
+      "nome": "Redes de computadores",
+      "prioridade": 2
+     },
+     {
+      "id": "info-06",
+      "nome": "Malware: vírus, worms e pragas",
+      "prioridade": 2
+     },
+     {
+      "id": "info-07",
+      "nome": "Antivírus, firewall e anti-spyware",
+      "prioridade": 2
+     },
+     {
+      "id": "info-08",
+      "nome": "Transmissão de dados",
+      "prioridade": 2
+     },
+     {
+      "id": "info-09",
+      "nome": "Metadados de arquivos",
+      "prioridade": 2
+     }
+    ]
+   },
+   {
+    "id": "medleg",
+    "nome": "Medicina Legal",
+    "peso": 1,
+    "assuntos": [
+     {
+      "id": "medleg-01",
+      "nome": "Perícias e peritos",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-02",
+      "nome": "Documentos médico-legais",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-03",
+      "nome": "Traumatologia forense",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-04",
+      "nome": "Lesões corporais",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-05",
+      "nome": "Tanatologia",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-06",
+      "nome": "Sexologia forense",
+      "prioridade": 2
+     },
+     {
+      "id": "medleg-07",
+      "nome": "Imputabilidade penal",
+      "prioridade": 2
+     }
+    ]
+   }
+  ],
+  "semana": {
+   "dom": [],
+   "seg": [
+    "port",
+    "penal",
+    "estat"
+   ],
+   "ter": [
+    "const",
+    "proc",
+    "cont"
+   ],
+   "qua": [
+    "rl",
+    "leg",
+    "info"
+   ],
+   "qui": [
+    "port",
+    "adm",
+    "estat"
+   ],
+   "sex": [
+    "proc",
+    "medleg",
+    "cont"
+   ],
+   "sab": [
+    "atual",
+    "etica",
+    "dh"
+   ]
+  },
+  "observacoes": "Plano baseado no edital PC/SE 2021 (Cebraspe) enquanto o novo edital não sai. Lei 14.735/2023 (Lei Orgânica das Polícias Civis) incluída por ser provável no próximo edital. Domingo: simulado e revisão."
+ },
+ "aulas": {
+  "schema": "preparador.aulas/1",
+  "idioma": "pt-BR",
+  "aulas": [
+   {
+    "materiaId": "port",
+    "assuntoId": "port-01",
+    "titulo": "Interpretação de textos – banca Cebraspe",
+    "url": "https://www.youtube.com/watch?v=DvDXfVkpatM"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-02",
+    "titulo": "Tipos e gêneros textuais: como nunca mais errar",
+    "url": "https://www.youtube.com/watch?v=Yj0cJ3D9WUg"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-03",
+    "titulo": "Acentuação para concurso: oxítonas, paroxítonas e proparoxítonas",
+    "url": "https://www.youtube.com/watch?v=nWQVPQmxWTk"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-04",
+    "titulo": "Domínio dos mecanismos de coesão textual",
+    "url": "https://www.youtube.com/watch?v=DKeV0lUyVqY"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-05",
+    "titulo": "Emprego de tempos e modos verbais",
+    "url": "https://www.youtube.com/watch?v=XmUcCeTtNjA"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-06",
+    "titulo": "Período composto: orações coordenadas e subordinadas",
+    "url": "https://www.youtube.com/watch?v=2JeNi0LlpUU"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-07",
+    "titulo": "Uso da vírgula: regras mais cobradas (teoria + questões)",
+    "url": "https://www.youtube.com/watch?v=S0dmQR6hpPE"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-08",
+    "titulo": "Concordância verbal e nominal para concursos",
+    "url": "https://www.youtube.com/watch?v=qFYxm6HrNrM"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-09",
+    "titulo": "Crase: as 6 regras mais cobradas (teoria + questões)",
+    "url": "https://www.youtube.com/watch?v=5uMooAjtVis"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-10",
+    "titulo": "Colocação pronominal para concurso",
+    "url": "https://www.youtube.com/watch?v=6zsVwix7Uh0"
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": "port-11",
+    "titulo": "Reescrita de frases e parágrafos – Cebraspe",
+    "url": "https://www.youtube.com/watch?v=_ra-w5CDYKU"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": null,
+    "titulo": "Concurso PMSE 2024 – Conhecimentos sobre Sergipe (playlist)",
+    "url": "https://www.youtube.com/playlist?list=PLM2kqWhoolXFAHYFJ5gcV1u90i4tmO6dz"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-01",
+    "titulo": "Atualidades 2026: conflitos no Oriente Médio",
+    "url": "https://www.youtube.com/watch?v=ylW8oArv35w"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-02",
+    "titulo": "Indígenas em Sergipe",
+    "url": "https://www.youtube.com/watch?v=dHX0ofD4o2w"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-03",
+    "titulo": "História de Sergipe: formação territorial",
+    "url": "https://www.youtube.com/watch?v=OpBXImDCR2A"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-04",
+    "titulo": "Economias fundadoras de Sergipe",
+    "url": "https://www.youtube.com/watch?v=ksyj0YRl8FM"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-04",
+    "titulo": "Regiões geoeconômicas de Sergipe",
+    "url": "https://www.youtube.com/watch?v=rvv0jyCCLDc"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-05",
+    "titulo": "História de Sergipe – Prof. Alberto Garcia",
+    "url": "https://www.youtube.com/watch?v=ML3WxQztFww"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-06",
+    "titulo": "Condicionantes geoambientais de Sergipe",
+    "url": "https://www.youtube.com/watch?v=j2QvYS2jwzo"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-06",
+    "titulo": "Geografia de Sergipe: hidrografia",
+    "url": "https://www.youtube.com/watch?v=JJu9lSu4puc"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-07",
+    "titulo": "População de Sergipe",
+    "url": "https://www.youtube.com/watch?v=JagtmaaFBxo"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-07",
+    "titulo": "Formação metropolitana de Aracaju",
+    "url": "https://www.youtube.com/watch?v=2gM_y-zOwrQ"
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": "atual-09",
+    "titulo": "Formação e expressão da cultura sergipana",
+    "url": "https://www.youtube.com/watch?v=5xYvZgXjwP8"
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": "etica-01",
+    "titulo": "Ética, moral, princípios e valores",
+    "url": "https://www.youtube.com/watch?v=JtQ-A0wh9g4"
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": "etica-03",
+    "titulo": "Ética e democracia",
+    "url": "https://www.youtube.com/watch?v=LKOVLmyEkpE"
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": "etica-04",
+    "titulo": "Curso completo de ética no serviço público – aula 1",
+    "url": "https://www.youtube.com/watch?v=qjkR6ohgOx8"
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": "etica-04",
+    "titulo": "Ética no serviço público: questões Cespe comentadas",
+    "url": "https://www.youtube.com/watch?v=-wyOyYPwdgs"
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": "dh-01",
+    "titulo": "Gerações e características dos direitos humanos",
+    "url": "https://www.youtube.com/watch?v=2WLYhcfOJqM"
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": "dh-02",
+    "titulo": "Afirmação histórica dos direitos humanos (aula completa)",
+    "url": "https://www.youtube.com/watch?v=FmFr_s1nUTU"
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": "dh-05",
+    "titulo": "Política Nacional de Direitos Humanos – PNDH-3",
+    "url": "https://www.youtube.com/watch?v=tbiL2rLzY0w"
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": "dh-06",
+    "titulo": "Hierarquia dos tratados de direitos humanos",
+    "url": "https://www.youtube.com/watch?v=6avdhynYJCA"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-01",
+    "titulo": "Proposições e conectivos lógicos – aula 1",
+    "url": "https://www.youtube.com/watch?v=uVBAOCFWSms"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-02",
+    "titulo": "Tabela-verdade – aula completa para concursos",
+    "url": "https://www.youtube.com/watch?v=1A0JSFJOMAo"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-03",
+    "titulo": "Leis de De Morgan",
+    "url": "https://www.youtube.com/watch?v=bM9086MaNvw"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-04",
+    "titulo": "Lógica de argumentação e diagramas lógicos",
+    "url": "https://www.youtube.com/watch?v=e9RcWo5Zlr8"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-05",
+    "titulo": "Quantificadores – lógica de primeira ordem",
+    "url": "https://www.youtube.com/watch?v=FayHfSJfB-g"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-06",
+    "titulo": "Princípio fundamental da contagem (questões de concurso)",
+    "url": "https://www.youtube.com/watch?v=psWqAomskOI"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-07",
+    "titulo": "Teoria dos conjuntos – Cespe",
+    "url": "https://www.youtube.com/watch?v=UCkkC9XrHtk"
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": "rl-08",
+    "titulo": "Problemas aritméticos, geométricos e matriciais",
+    "url": "https://www.youtube.com/watch?v=57JpwjXQ_9E"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-01",
+    "titulo": "Regime jurídico-administrativo esquematizado",
+    "url": "https://www.youtube.com/watch?v=lejwN1svzS4"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-01",
+    "titulo": "Princípios da administração pública – LIMPE",
+    "url": "https://www.youtube.com/watch?v=k8GtNyO-ZAY"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-02",
+    "titulo": "Centralização, descentralização, concentração e desconcentração",
+    "url": "https://www.youtube.com/watch?v=pxTwAojH2vk"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-03",
+    "titulo": "Administração indireta: autarquias, fundações, EP e SEM",
+    "url": "https://www.youtube.com/watch?v=gYgL1d5yaes"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-04",
+    "titulo": "Atos administrativos: conceito, espécies e classificação",
+    "url": "https://www.youtube.com/watch?v=L2lXiq54qno"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-05",
+    "titulo": "Agentes públicos – aulão",
+    "url": "https://www.youtube.com/watch?v=dMFWB8DPOyQ"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-06",
+    "titulo": "Poderes administrativos: disciplinar, regulamentar e de polícia",
+    "url": "https://www.youtube.com/watch?v=p3TskaE-9-s"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-06",
+    "titulo": "Uso e abuso de poder",
+    "url": "https://www.youtube.com/watch?v=g4ZOHOoc-WY"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-07",
+    "titulo": "Modalidades de licitação na Lei 14.133",
+    "url": "https://www.youtube.com/watch?v=caNo-HLaA0M"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-07",
+    "titulo": "Contratação direta: dispensa e inexigibilidade",
+    "url": "https://www.youtube.com/watch?v=GXy1NDOwM_o"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-08",
+    "titulo": "Controle administrativo, legislativo e judicial",
+    "url": "https://www.youtube.com/watch?v=Ca8Lv-vraCk"
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": "adm-09",
+    "titulo": "Responsabilidade civil do Estado",
+    "url": "https://www.youtube.com/watch?v=fS0LrjO5Wfs"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-01",
+    "titulo": "Art. 5º da CF para concursos policiais – parte 1",
+    "url": "https://www.youtube.com/watch?v=1gNBDIn4lsg"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-02",
+    "titulo": "Remédios constitucionais",
+    "url": "https://www.youtube.com/watch?v=tdSgn_SjO9U"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-03",
+    "titulo": "Direitos sociais (arts. 6º a 11)",
+    "url": "https://www.youtube.com/watch?v=LlEKrSk0LFw"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-04",
+    "titulo": "Nacionalidade – art. 12 da CF",
+    "url": "https://www.youtube.com/watch?v=7xBUVLIb0Zw"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-05",
+    "titulo": "Direitos políticos e partidos políticos (arts. 14 a 17)",
+    "url": "https://www.youtube.com/watch?v=miANLeTe_oY"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-06",
+    "titulo": "Poder Executivo",
+    "url": "https://www.youtube.com/watch?v=hKXl-YG54TU"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-07",
+    "titulo": "Segurança pública na Constituição – art. 144",
+    "url": "https://www.youtube.com/watch?v=e_hMPp5_6cI"
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": "const-08",
+    "titulo": "Ordem social – revisão completa",
+    "url": "https://www.youtube.com/watch?v=Pm1H2LijsPk"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "titulo": "Direito Penal do Zero para a Polícia Civil",
+    "url": "https://www.youtube.com/watch?v=M78IiD2M5NY"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-01",
+    "titulo": "Princípios do Direito Penal – aula completa",
+    "url": "https://www.youtube.com/watch?v=BK0hrlnUKjc"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-02",
+    "titulo": "Lei penal no tempo e no espaço – questões + resumo",
+    "url": "https://www.youtube.com/watch?v=cBcMPYuUaJ0"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-03",
+    "titulo": "Fato típico e seus elementos + teorias da conduta",
+    "url": "https://www.youtube.com/watch?v=te-hFN7_2h8"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-04",
+    "titulo": "Iter criminis, tentativa e consumação",
+    "url": "https://www.youtube.com/watch?v=aDf_7cPXSJM"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-04",
+    "titulo": "Desistência voluntária, arrependimento eficaz e posterior",
+    "url": "https://www.youtube.com/watch?v=EwsD3UiZTyM"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-05",
+    "titulo": "Excludentes de ilicitude e legítima defesa",
+    "url": "https://www.youtube.com/watch?v=8XGvBalJbDI"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-06",
+    "titulo": "Homicídio (art. 121)",
+    "url": "https://www.youtube.com/watch?v=9TU6FgJ4C2o"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-06",
+    "titulo": "Lesão corporal (art. 129) – atualizado 2026",
+    "url": "https://www.youtube.com/watch?v=aMB5zJ4jieY"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-07",
+    "titulo": "Diferença entre furto, roubo e extorsão",
+    "url": "https://www.youtube.com/watch?v=qsX9WNGNCks"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-07",
+    "titulo": "Estelionato (art. 171) – atualizado 2026",
+    "url": "https://www.youtube.com/watch?v=p19n1tgn6Bo"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-08",
+    "titulo": "Crimes contra a fé pública",
+    "url": "https://www.youtube.com/watch?v=-8Sv_ihekQA"
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": "penal-09",
+    "titulo": "Crimes contra a Administração Pública",
+    "url": "https://www.youtube.com/watch?v=9m00Bn3xWxE"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "titulo": "Processo Penal do Zero para a Polícia Civil",
+    "url": "https://www.youtube.com/watch?v=IikAfrpdZZM"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-01",
+    "titulo": "Tudo sobre inquérito policial em 3h",
+    "url": "https://www.youtube.com/watch?v=rYX87AGaXC8"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-02",
+    "titulo": "Teoria geral da prova",
+    "url": "https://www.youtube.com/watch?v=zSrr_sllIhM"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-02",
+    "titulo": "Cadeia de custódia da prova",
+    "url": "https://www.youtube.com/watch?v=Kqx5vYQ3OMY"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-03",
+    "titulo": "Provas em espécie",
+    "url": "https://www.youtube.com/watch?v=xH4dyYifHyU"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-04",
+    "titulo": "Busca e apreensão no processo penal (CPP, art. 240)",
+    "url": "https://www.youtube.com/watch?v=CkDOVcOJ0rU"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-05",
+    "titulo": "Prisão em flagrante – aula esquematizada + questões",
+    "url": "https://www.youtube.com/watch?v=SzreBgHZryc"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-06",
+    "titulo": "Flagrante, preventiva e temporária sem confundir",
+    "url": "https://www.youtube.com/watch?v=yIV6LUHHM8o"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-06",
+    "titulo": "Prisão preventiva e prisão domiciliar",
+    "url": "https://www.youtube.com/watch?v=BlfzSrNMjfY"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-07",
+    "titulo": "Liberdade provisória, relaxamento e revogação da prisão",
+    "url": "https://www.youtube.com/watch?v=2qbYHU2Ro7U"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-07",
+    "titulo": "Medidas cautelares diversas da prisão",
+    "url": "https://www.youtube.com/watch?v=gI5Lc-opS6k"
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": "proc-08",
+    "titulo": "Audiência de custódia (art. 310 do CPP)",
+    "url": "https://www.youtube.com/watch?v=bWfSzx9KaUc"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-01",
+    "titulo": "Lei de Drogas (11.343/06) – aula completa",
+    "url": "https://www.youtube.com/watch?v=oXt3X78i6Tg"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-02",
+    "titulo": "Lei de Abuso de Autoridade (13.869/19)",
+    "url": "https://www.youtube.com/watch?v=AzVpuQfcjPw"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-03",
+    "titulo": "Lei de Tortura (9.455/97) – teoria + questões",
+    "url": "https://www.youtube.com/watch?v=gr7tf8O8O6M"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-04",
+    "titulo": "ECA – parte criminal: ato infracional",
+    "url": "https://www.youtube.com/watch?v=GIn7MrZ3dhM"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-05",
+    "titulo": "Estatuto do Desarmamento (10.826/03)",
+    "url": "https://www.youtube.com/watch?v=6WqqpOA5qKs"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-06",
+    "titulo": "Crimes Ambientais (9.605/98) – Cebraspe, parte 1",
+    "url": "https://www.youtube.com/watch?v=umAFiZg0Qps"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-07",
+    "titulo": "Identificação Criminal (12.037/09) comentada",
+    "url": "https://www.youtube.com/watch?v=gtzcwnhQoP8"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-08",
+    "titulo": "Lei de Prisão Temporária (7.960/89)",
+    "url": "https://www.youtube.com/watch?v=0rTW8nl6FGQ"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-09",
+    "titulo": "Lei de Lavagem de Dinheiro (9.613/98)",
+    "url": "https://www.youtube.com/watch?v=UaMAsy-YvOk"
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": "leg-10",
+    "titulo": "Lei Orgânica Nacional das Polícias Civis (14.735/23)",
+    "url": "https://www.youtube.com/watch?v=-zYrVkLaKYs"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-01",
+    "titulo": "Distribuição de frequência",
+    "url": "https://www.youtube.com/watch?v=BvdoWSvsF6Y"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-02",
+    "titulo": "Medidas de posição e dispersão",
+    "url": "https://www.youtube.com/watch?v=usTiNwU1FCE"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-02",
+    "titulo": "Variância, desvio-padrão e coeficiente de variação",
+    "url": "https://www.youtube.com/watch?v=7K2jw0IgUxM"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-03",
+    "titulo": "Probabilidade condicional e independência – Cebraspe",
+    "url": "https://www.youtube.com/watch?v=5FcC6oP96LU"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-04",
+    "titulo": "Distribuição binomial (exercícios de concurso)",
+    "url": "https://www.youtube.com/watch?v=MsFZj5Dq7kY"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-05",
+    "titulo": "Esperança e variância de variável aleatória discreta",
+    "url": "https://www.youtube.com/watch?v=EtclWo14kQI"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-06",
+    "titulo": "Lei dos grandes números e Teorema Central do Limite",
+    "url": "https://www.youtube.com/watch?v=xXjmaTM_kNs"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-07",
+    "titulo": "Distribuição amostral da média",
+    "url": "https://www.youtube.com/watch?v=BahqueuRIAo"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-08",
+    "titulo": "Intervalo de confiança da média – questão Cebraspe PF",
+    "url": "https://www.youtube.com/watch?v=ilG0RXsMbmo"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-09",
+    "titulo": "Teste de hipóteses: erros tipo I e II",
+    "url": "https://www.youtube.com/watch?v=IYryia6xcKw"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-10",
+    "titulo": "Regressão linear – Polícia Federal",
+    "url": "https://www.youtube.com/watch?v=ZrfhEOdglzY"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-10",
+    "titulo": "Método dos mínimos quadrados",
+    "url": "https://www.youtube.com/watch?v=GreM9PK-5NQ"
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": "estat-11",
+    "titulo": "Amostragem estratificada x conglomerados (PF 2018)",
+    "url": "https://www.youtube.com/watch?v=AUBI-vZZK9M"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-01",
+    "titulo": "Conceito, objeto, finalidade e técnicas contábeis",
+    "url": "https://www.youtube.com/watch?v=rlNcN1C4miI"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-02",
+    "titulo": "Patrimônio: componentes, equação fundamental e situação líquida",
+    "url": "https://www.youtube.com/watch?v=UejN_3Ik-KI"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-03",
+    "titulo": "Atos e fatos: permutativos, modificativos e mistos",
+    "url": "https://www.youtube.com/watch?v=5QEiiOrBlRU"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-04",
+    "titulo": "Lógica de débito e crédito",
+    "url": "https://www.youtube.com/watch?v=PtlI3R7y-T0"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-05",
+    "titulo": "Regimes contábeis: competência, caixa e misto",
+    "url": "https://www.youtube.com/watch?v=07sA7BIcsPY"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-06",
+    "titulo": "Depreciação: cálculo e contabilização (PF 2018)",
+    "url": "https://www.youtube.com/watch?v=tdV16bvj7D4"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-06",
+    "titulo": "Folha de pagamento e benefícios a empregados",
+    "url": "https://www.youtube.com/watch?v=LbJmfrqreng"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-07",
+    "titulo": "Balancete de verificação",
+    "url": "https://www.youtube.com/watch?v=4gcMUmI4IcI"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-08",
+    "titulo": "Estrutura do Balanço Patrimonial na Lei 6.404/76",
+    "url": "https://www.youtube.com/watch?v=faXW7EmuneA"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-09",
+    "titulo": "DRE – questões Cebraspe, parte 1",
+    "url": "https://www.youtube.com/watch?v=IS5SEqqKvY4"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-10",
+    "titulo": "Pronunciamentos contábeis e CPC 00",
+    "url": "https://www.youtube.com/watch?v=WTmIqHXGpnc"
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": "cont-11",
+    "titulo": "NBC TSP Estrutura Conceitual",
+    "url": "https://www.youtube.com/watch?v=4IFJddiyH8U"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-01",
+    "titulo": "Internet, intranet e extranet",
+    "url": "https://www.youtube.com/watch?v=Xho87CMk2QU"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-02",
+    "titulo": "Ferramentas de navegação e correio eletrônico",
+    "url": "https://www.youtube.com/watch?v=jAzpuA_sSws"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-02",
+    "titulo": "Comandos avançados de busca no Google",
+    "url": "https://www.youtube.com/watch?v=hmvNXbm1Y3w"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-03",
+    "titulo": "Windows 11 para concursos – aula 1",
+    "url": "https://www.youtube.com/watch?v=9Ua5AgeL2fc"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-03",
+    "titulo": "LibreOffice Calc para concursos",
+    "url": "https://www.youtube.com/watch?v=768FH6Sj_B0"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-04",
+    "titulo": "Questões de Word, Excel e PowerPoint",
+    "url": "https://www.youtube.com/watch?v=uL7DR8kcPpE"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-05",
+    "titulo": "Redes: protocolos",
+    "url": "https://www.youtube.com/watch?v=CcBvqLq0UeA"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-06",
+    "titulo": "Malware e vírus",
+    "url": "https://www.youtube.com/watch?v=1tVxzd7id7A"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-07",
+    "titulo": "Antivírus, firewall e anti-spyware",
+    "url": "https://www.youtube.com/watch?v=QufHod-yZIk"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-08",
+    "titulo": "Simplex, half-duplex e full-duplex",
+    "url": "https://www.youtube.com/watch?v=DrrEh4T1-JY"
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": "info-09",
+    "titulo": "Acesso remoto e metadados de arquivos (Cespe)",
+    "url": "https://www.youtube.com/watch?v=-hgg582fZDQ"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "titulo": "Medicina Legal para Investigador (PC BA)",
+    "url": "https://www.youtube.com/watch?v=k1cP44O16gY"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-01",
+    "titulo": "Introdução à medicina legal e perícias médico-legais",
+    "url": "https://www.youtube.com/watch?v=rjNJDAxTWzc"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-02",
+    "titulo": "Documentos médico-legais",
+    "url": "https://www.youtube.com/watch?v=nlOf_j0eRws"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-03",
+    "titulo": "Traumatologia forense",
+    "url": "https://www.youtube.com/watch?v=1MqSb6aQqx0"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-04",
+    "titulo": "Lesão corporal leve, grave e gravíssima",
+    "url": "https://www.youtube.com/watch?v=2-37Pb4k66U"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-05",
+    "titulo": "Morte e tanatognose",
+    "url": "https://www.youtube.com/watch?v=SM8xrAk67oQ"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-06",
+    "titulo": "Sexologia forense – aula 1",
+    "url": "https://www.youtube.com/watch?v=2-nx8t2SNCo"
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": "medleg-07",
+    "titulo": "Imputabilidade penal e transtornos mentais",
+    "url": "https://www.youtube.com/watch?v=KeHsqbCymTU"
+   }
+  ]
+ },
+ "questoes": {
+  "schema": "preparador.questoes/1",
+  "questoes": [
+   {
+    "materiaId": "port",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Em “Fazem dois anos que o inquérito foi instaurado”, a concordância está de acordo com a norma-padrão.",
+    "gabarito": "E",
+    "explicacao": "O verbo “fazer” indicando tempo decorrido é impessoal e fica no singular: “Faz dois anos”."
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Em “Refiro-me à investigação concluída ontem”, o acento grave é obrigatório.",
+    "gabarito": "C",
+    "explicacao": "“Referir-se” exige a preposição “a”, e “investigação” aceita o artigo “a”: a + a = à."
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Em “Os agentes, que participaram da operação, foram elogiados”, retirar as vírgulas manteria o sentido do período.",
+    "gabarito": "E",
+    "explicacao": "Com vírgulas a oração é explicativa (todos os agentes participaram). Sem elas vira restritiva (só os que participaram foram elogiados)."
+   },
+   {
+    "materiaId": "port",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A norma-padrão admite iniciar oração com pronome oblíquo átono, como em “Me disseram que o laudo chegou”.",
+    "gabarito": "E",
+    "explicacao": "A norma-padrão não admite próclise em início de oração. O correto é “Disseram-me”."
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Sergipe é o menor estado brasileiro em extensão territorial.",
+    "gabarito": "C",
+    "explicacao": "Com cerca de 21,9 mil km², Sergipe é o menor estado da Federação."
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O rio São Francisco forma a divisa natural entre Sergipe e a Bahia.",
+    "gabarito": "E",
+    "explicacao": "O São Francisco separa Sergipe de Alagoas, ao norte. Com a Bahia a divisa é ao sul e a oeste."
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A capital de Sergipe foi transferida de São Cristóvão para Aracaju em 1855.",
+    "gabarito": "C",
+    "explicacao": "A mudança ocorreu em 1855, no governo de Inácio Barbosa."
+   },
+   {
+    "materiaId": "atual",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Sergipe tornou-se capitania independente da Bahia por decreto de D. João VI, em 1820.",
+    "gabarito": "C",
+    "explicacao": "A emancipação foi decretada em 8 de julho de 1820, data comemorada no estado."
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Moral é o conjunto de normas e costumes de um grupo; ética é a reflexão teórica sobre esses valores.",
+    "gabarito": "C",
+    "explicacao": "É a distinção clássica cobrada em provas: a moral é prática e cultural; a ética é a reflexão sobre ela."
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A conduta ética exigida do servidor público limita-se ao horário de expediente.",
+    "gabarito": "E",
+    "explicacao": "O Código de Ética (Decreto 1.171/1994) afirma que a vida privada do servidor também repercute na função pública."
+   },
+   {
+    "materiaId": "etica",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O princípio da publicidade impede qualquer sigilo nos atos da Administração.",
+    "gabarito": "E",
+    "explicacao": "A CF admite sigilo quando imprescindível à segurança da sociedade e do Estado ou para proteger a intimidade."
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Tratados de direitos humanos aprovados em cada Casa do Congresso, em dois turnos, por três quintos dos votos, equivalem a emendas constitucionais.",
+    "gabarito": "C",
+    "explicacao": "É o rito do art. 5º, §3º, da CF, incluído pela EC 45/2004."
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Para o STF, tratados de direitos humanos não aprovados pelo rito especial têm status de lei ordinária.",
+    "gabarito": "E",
+    "explicacao": "O STF lhes atribui status supralegal: abaixo da CF, acima das leis."
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "É admitida no Brasil a prisão civil do depositário infiel.",
+    "gabarito": "E",
+    "explicacao": "A Súmula Vinculante 25 declara ilícita essa prisão. Só cabe prisão civil por dívida de alimentos."
+   },
+   {
+    "materiaId": "dh",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A universalidade significa que os direitos humanos pertencem a todas as pessoas, independentemente de nacionalidade, sexo, raça ou religião.",
+    "gabarito": "C",
+    "explicacao": "A condição de pessoa é o único requisito para a titularidade."
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A negação de “O agente investigou e o escrivão registrou” é “O agente não investigou e o escrivão não registrou”.",
+    "gabarito": "E",
+    "explicacao": "Pela Lei de De Morgan, a negação de “p e q” é “não p ou não q”."
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "“Se chove, então a rua fica molhada” equivale a “Se a rua não fica molhada, então não chove”.",
+    "gabarito": "C",
+    "explicacao": "É a contrapositiva: p → q equivale a ~q → ~p."
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Com 5 agentes, podem-se formar 60 equipes distintas de 3 agentes.",
+    "gabarito": "E",
+    "explicacao": "A ordem não importa, então é combinação: C(5,3) = 10."
+   },
+   {
+    "materiaId": "rl",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A condicional p → q só é falsa quando p é verdadeira e q é falsa.",
+    "gabarito": "C",
+    "explicacao": "É a única linha falsa da tabela-verdade da condicional."
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Autarquias são pessoas jurídicas de direito público criadas por lei específica.",
+    "gabarito": "C",
+    "explicacao": "Art. 37, XIX, da CF: a autarquia é criada diretamente por lei."
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Desconcentração é a distribuição de competências entre pessoas jurídicas distintas.",
+    "gabarito": "E",
+    "explicacao": "Isso é descentralização. A desconcentração ocorre dentro da mesma pessoa jurídica, entre órgãos."
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A autoexecutoriedade está presente em todos os atos administrativos.",
+    "gabarito": "E",
+    "explicacao": "Ela só existe quando a lei prevê ou em situação urgente. Cobrança de multa, por exemplo, depende do Judiciário."
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A dispensa de licitação ocorre quando a competição é inviável.",
+    "gabarito": "E",
+    "explicacao": "Competição inviável gera inexigibilidade. Na dispensa a competição é possível, mas a lei permite não licitar."
+   },
+   {
+    "materiaId": "adm",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A responsabilidade do Estado por atos comissivos de seus agentes é, em regra, objetiva.",
+    "gabarito": "C",
+    "explicacao": "Art. 37, §6º, da CF: teoria do risco administrativo, sem necessidade de provar culpa."
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Durante o dia, pode-se entrar na casa sem consentimento do morador por determinação judicial.",
+    "gabarito": "C",
+    "explicacao": "Art. 5º, XI: ordem judicial só de dia. Flagrante, desastre ou socorro, a qualquer hora."
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Às polícias civis cabem as funções de polícia judiciária e a apuração de infrações penais, inclusive as militares.",
+    "gabarito": "E",
+    "explicacao": "O art. 144, §4º, ressalva a competência da União e exclui as infrações militares."
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O habeas data protege o direito de locomoção.",
+    "gabarito": "E",
+    "explicacao": "Locomoção é tutelada pelo habeas corpus. O habeas data garante acesso e retificação de dados pessoais."
+   },
+   {
+    "materiaId": "const",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "É brasileiro nato o nascido no estrangeiro, de pai ou mãe brasileira, registrado em repartição brasileira competente.",
+    "gabarito": "C",
+    "explicacao": "Art. 12, I, “c”, da CF."
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Considera-se praticado o crime no momento da ação ou omissão, ainda que outro seja o momento do resultado.",
+    "gabarito": "C",
+    "explicacao": "Art. 4º do CP: teoria da atividade."
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Quanto ao lugar do crime, o Código Penal adota exclusivamente a teoria do resultado.",
+    "gabarito": "E",
+    "explicacao": "O art. 6º adota a teoria da ubiquidade: lugar da ação ou do resultado."
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Na tentativa, salvo disposição em contrário, aplica-se a pena do crime consumado diminuída de um a dois terços.",
+    "gabarito": "C",
+    "explicacao": "Art. 14, parágrafo único, do CP."
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Subtrair coisa alheia móvel mediante grave ameaça à pessoa configura roubo.",
+    "gabarito": "C",
+    "explicacao": "Art. 157 do CP. Sem violência ou grave ameaça, seria furto (art. 155)."
+   },
+   {
+    "materiaId": "penal",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O peculato é crime praticado por particular contra a Administração Pública.",
+    "gabarito": "E",
+    "explicacao": "Peculato (art. 312) é crime próprio de funcionário público."
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O inquérito policial é procedimento administrativo, inquisitivo e dispensável ao oferecimento da denúncia.",
+    "gabarito": "C",
+    "explicacao": "Se o MP já tiver elementos suficientes, pode denunciar sem inquérito."
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A autoridade policial pode mandar arquivar autos de inquérito.",
+    "gabarito": "E",
+    "explicacao": "Art. 17 do CPP: a autoridade policial não pode arquivar o inquérito."
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Qualquer do povo deverá prender quem for encontrado em flagrante delito.",
+    "gabarito": "E",
+    "explicacao": "Art. 301 do CPP: qualquer do povo PODERÁ prender; as autoridades policiais DEVERÃO."
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O preso em flagrante deve ser levado à audiência de custódia em até 24 horas.",
+    "gabarito": "C",
+    "explicacao": "Art. 310 do CPP, com a redação do Pacote Anticrime."
+   },
+   {
+    "materiaId": "proc",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Nos crimes hediondos, a prisão temporária é de 30 dias, prorrogável por igual período.",
+    "gabarito": "C",
+    "explicacao": "Lei 8.072/1990, art. 2º, §4º, em caso de extrema e comprovada necessidade."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Quem adquire droga para consumo pessoal está sujeito a pena privativa de liberdade.",
+    "gabarito": "E",
+    "explicacao": "O art. 28 da Lei 11.343/2006 prevê advertência, prestação de serviços e medida educativa, sem prisão."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O crime de tortura é inafiançável e insuscetível de graça ou anistia.",
+    "gabarito": "C",
+    "explicacao": "Lei 9.455/1997, art. 1º, §6º, em linha com o art. 5º, XLIII, da CF."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Nos crimes comuns, a prisão temporária dura 5 dias, prorrogável por igual período.",
+    "gabarito": "C",
+    "explicacao": "Lei 7.960/1989, art. 2º."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Pelo ECA, criança é a pessoa até doze anos de idade incompletos.",
+    "gabarito": "C",
+    "explicacao": "Art. 2º do ECA. Adolescente: de doze a dezoito anos."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O registro de arma de fogo autoriza o proprietário a portá-la fora de casa.",
+    "gabarito": "E",
+    "explicacao": "Registro permite manter a arma em casa ou no trabalho (se titular). Portar exige autorização de porte."
+   },
+   {
+    "materiaId": "leg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A divergência na interpretação da lei, por si só, configura abuso de autoridade.",
+    "gabarito": "E",
+    "explicacao": "Art. 1º, §2º, da Lei 13.869/2019 afasta expressamente essa hipótese."
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "No conjunto {2, 4, 4, 6, 9}, a média é 5 e a mediana é 4.",
+    "gabarito": "C",
+    "explicacao": "Soma 25 ÷ 5 = 5. O valor central do rol ordenado é 4."
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A variância é expressa na mesma unidade dos dados.",
+    "gabarito": "E",
+    "explicacao": "A variância está na unidade ao quadrado. O desvio padrão é que volta à unidade original."
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Se A e B são independentes, P(A ∩ B) = P(A) · P(B).",
+    "gabarito": "C",
+    "explicacao": "É a definição de eventos independentes."
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O erro tipo I consiste em não rejeitar H0 quando ela é falsa.",
+    "gabarito": "E",
+    "explicacao": "Esse é o erro tipo II. O tipo I é rejeitar H0 quando ela é verdadeira."
+   },
+   {
+    "materiaId": "estat",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Na amostragem estratificada, a população é dividida em grupos internamente homogêneos e sorteiam-se elementos de cada grupo.",
+    "gabarito": "C",
+    "explicacao": "Na amostragem por conglomerados, ao contrário, sorteiam-se grupos inteiros."
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A equação fundamental do patrimônio é Ativo = Passivo + Patrimônio Líquido.",
+    "gabarito": "C",
+    "explicacao": "Bens e direitos equivalem às obrigações mais o capital próprio."
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Pelo regime de competência, a receita só é reconhecida quando recebida.",
+    "gabarito": "E",
+    "explicacao": "Na competência, reconhece-se a receita quando ganha, independentemente do recebimento. Isso descreve o regime de caixa."
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A compra de mercadoria à vista é um fato permutativo.",
+    "gabarito": "C",
+    "explicacao": "Troca caixa por estoque, sem alterar o patrimônio líquido."
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Contas do ativo aumentam por crédito.",
+    "gabarito": "E",
+    "explicacao": "Ativo aumenta por débito e diminui por crédito."
+   },
+   {
+    "materiaId": "cont",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "O pagamento de aluguel é fato modificativo diminutivo.",
+    "gabarito": "C",
+    "explicacao": "A despesa reduz o patrimônio líquido."
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Intranet é uma rede privada que usa os mesmos protocolos da internet.",
+    "gabarito": "C",
+    "explicacao": "Usa TCP/IP, HTTP etc., mas com acesso restrito à organização."
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Worm precisa ser executado pelo usuário e se anexar a outros arquivos para se propagar.",
+    "gabarito": "E",
+    "explicacao": "Isso descreve o vírus. O worm se propaga sozinho pela rede, explorando vulnerabilidades."
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Um firewall impede a infecção por qualquer tipo de malware.",
+    "gabarito": "E",
+    "explicacao": "O firewall filtra tráfego de rede. Não substitui antivírus nem impede tudo."
+   },
+   {
+    "materiaId": "info",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Os metadados de uma foto podem conter data, modelo da câmera e coordenadas de GPS.",
+    "gabarito": "C",
+    "explicacao": "São os dados EXIF, muito úteis em investigação."
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Lesão que gera incapacidade para as ocupações habituais por mais de 30 dias é lesão grave.",
+    "gabarito": "C",
+    "explicacao": "Art. 129, §1º, I, do CP."
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Perda ou inutilização de membro, sentido ou função caracteriza lesão gravíssima.",
+    "gabarito": "C",
+    "explicacao": "Art. 129, §2º, III, do CP."
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Instrumentos perfurocortantes produzem feridas contusas.",
+    "gabarito": "E",
+    "explicacao": "Produzem feridas perfuroincisas. Feridas contusas vêm de instrumentos contundentes."
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "A rigidez cadavérica é sinal abiótico imediato da morte.",
+    "gabarito": "E",
+    "explicacao": "É um sinal abiótico consecutivo. Imediatos são, por exemplo, a parada respiratória e cardíaca."
+   },
+   {
+    "materiaId": "medleg",
+    "assuntoId": null,
+    "tipo": "CE",
+    "enunciado": "Nas infrações que deixam vestígios, a confissão do acusado não supre a falta do exame de corpo de delito.",
+    "gabarito": "C",
+    "explicacao": "Art. 158 do CPP."
+   }
+  ]
+ }
+}

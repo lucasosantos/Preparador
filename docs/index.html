@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preparador</title>
+<meta name="description" content="Organizador de estudos gratuito para concursos, ENEM, vestibulares e processos seletivos. Gere seu plano a partir do edital com a IA que você já usa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f5f6f2; --surface: #ffffff; --fg: #17211c; --muted: #5b665f; --line: #dde1d9;
+  --accent: #1f7a4d; --accent-soft: #e3f1e8; --gold: #9a720c; --gold-soft: #f8efd6;
+  --bad: #b3362b; --bad-soft: #fbe7e4; --play: #cc2a22;
+  --display: "Bricolage Grotesque", system-ui, sans-serif;
+  --body: "Source Sans 3", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --surface: #18201b; --fg: #e7ece8; --muted: #9aa69e; --line: #2a352e;
+    --accent: #4cc287; --accent-soft: #1c3226; --gold: #e0b84a; --gold-soft: #332a12;
+    --bad: #ef7b6f; --bad-soft: #3a1c19; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --surface: #18201b; --fg: #e7ece8; --muted: #9aa69e; --line: #2a352e;
+  --accent: #4cc287; --accent-soft: #1c3226; --gold: #e0b84a; --gold-soft: #332a12;
+  --bad: #ef7b6f; --bad-soft: #3a1c19; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--body); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code, kbd { font: 500 0.88em var(--mono); background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
+pre { margin: 0; font: 500 13px/1.55 var(--mono); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-weight: 800; font-size: clamp(34px, 6vw, 56px); line-height: 1.04; letter-spacing: -0.01em; }
+h2 { font-weight: 800; font-size: clamp(26px, 4vw, 34px); line-height: 1.1; }
+h3 { font-weight: 600; font-size: 20px; line-height: 1.25; }
+p { margin: 0; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left)); }
+
+/* topo */
+.topo { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.topo .wrap { display: flex; align-items: center; gap: 16px; height: 60px; }
+.marca { font: 800 20px var(--display); color: var(--fg); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.marca i { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: inline-block; position: relative; }
+.marca i::after { content: ""; position: absolute; inset: 6px 5px 5px 6px; border: 2px solid var(--bg); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -2px); width: 8px; height: 4px; }
+.topo nav { margin-left: auto; display: flex; gap: 4px; }
+.topo nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; padding: 6px 10px; border-radius: 8px; }
+.topo nav a:hover { color: var(--fg); background: var(--surface); }
+.tema { font: 600 14px var(--body); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+@media (max-width: 760px) { .topo nav { display: none; } .tema { margin-left: auto; } }
+
+/* hero */
+.hero { padding: 56px 0 40px; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px; } }
+.hero p.lead { font-size: 20px; color: var(--muted); margin-top: 18px; max-width: 34em; }
+.botoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 700 16px var(--body); text-decoration: none; padding: 12px 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.btn:hover { border-color: var(--accent); }
+.btn.primario { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn small { font-weight: 400; opacity: .85; font-size: 13px; }
+.selos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.selo { font: 500 12px var(--mono); padding: 4px 10px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.aviso-dl { font-size: 14px; margin-top: 10px; }
+
+/* janela ilustrativa */
+.janela { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 60px -30px rgb(0 0 0 / .35); overflow: hidden; min-width: 0; }
+.janela .barra { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.janela .barra i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.janela .corpo { display: grid; grid-template-columns: 120px minmax(0, 1fr); min-height: 330px; }
+.janela .lado { border-right: 1px solid var(--line); padding: 12px 8px; display: flex; flex-direction: column; gap: 3px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.janela .lado span { padding: 5px 8px; border-radius: 6px; border-left: 3px solid transparent; }
+.janela .lado span.on { background: var(--accent-soft); color: var(--fg); border-left-color: var(--accent); }
+.janela .tela { padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); min-width: 0; }
+.mini-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.mini-stats div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 11px; color: var(--muted); }
+.mini-stats b { display: block; font: 500 15px var(--mono); color: var(--fg); }
+.sessao { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.sessao.feita { border-color: var(--accent); }
+.sessao.rev { background: var(--gold-soft); border-color: var(--gold); }
+.sessao .cab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.sessao .cab b { font: 700 14px var(--display); }
+.sessao .chip { font: 500 10px var(--mono); padding: 1px 7px; border-radius: 99px; background: var(--bg); color: var(--muted); white-space: nowrap; }
+.sessao.feita .chip { background: var(--accent-soft); color: var(--accent); }
+.aula-mini { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.aula-mini i { width: 22px; height: 15px; border-radius: 4px; background: var(--play); flex: none; position: relative; }
+.aula-mini i::after { content: ""; position: absolute; left: 8px; top: 4px; border-left: 6px solid #fff; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+.checks { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.checks span::before { content: ""; display: inline-block; width: 11px; height: 11px; border: 1.5px solid var(--muted); border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.checks span.on::before { background: var(--accent); border-color: var(--accent); }
+@media (max-width: 480px) { .janela .corpo { grid-template-columns: minmax(0, 1fr); } .janela .lado { display: none; } }
+
+/* seções */
+section.bloco { padding: 56px 0; border-top: 1px solid var(--line); }
+.cabeca { display: flex; flex-direction: column; gap: 10px; max-width: 46em; margin-bottom: 30px; }
+.cabeca p { color: var(--muted); font-size: 18px; }
+
+/* fluxo da IA */
+.fluxo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: passo; }
+@media (max-width: 860px) { .fluxo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .fluxo { grid-template-columns: minmax(0, 1fr); } }
+.fluxo li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+.fluxo li::before { counter-increment: passo; content: counter(passo); font: 500 13px var(--mono); width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+.fluxo { padding: 0; margin: 0; }
+.fluxo p { color: var(--muted); font-size: 15px; }
+
+/* modos */
+.cartoes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .cartoes { grid-template-columns: minmax(0, 1fr); } }
+.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.cartao p { color: var(--muted); font-size: 15px; }
+.cartao .quando { font: 500 12px var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+
+/* guia */
+.guia { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 860px) { .guia { grid-template-columns: minmax(0, 1fr); } .indice { display: none; } }
+.indice { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+.indice a { color: var(--muted); text-decoration: none; padding: 5px 10px; border-left: 2px solid var(--line); }
+.indice a:hover { color: var(--fg); border-left-color: var(--accent); }
+.passos { display: flex; flex-direction: column; gap: 36px; min-width: 0; }
+.passo { display: flex; flex-direction: column; gap: 12px; }
+.passo h3 { display: flex; gap: 10px; align-items: baseline; }
+.passo h3 span { font: 500 13px var(--mono); color: var(--accent); }
+.passo ol, .passo ul { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.dica { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+.atencao { background: var(--gold-soft); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+.dica b, .atencao b { display: block; margin-bottom: 2px; }
+
+/* mcp */
+.duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .duas { grid-template-columns: minmax(0, 1fr); } }
+.duas > div { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.pedidos { display: flex; flex-wrap: wrap; gap: 8px; }
+.pedidos span { background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; font-size: 15px; }
+
+/* faq */
+details { border-top: 1px solid var(--line); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; padding: 16px 2px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font: 500 20px var(--mono); color: var(--muted); }
+details[open] summary::after { content: "−"; }
+details > div { padding: 0 2px 18px; color: var(--muted); display: flex; flex-direction: column; gap: 8px; }
+
+footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="wrap">
+    <a class="marca" href="#"><i aria-hidden="true"></i>Preparador</a>
+    <nav aria-label="Seções">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#instalar">Instalar</a>
+      <a href="#guia">Guia</a>
+      <a href="#claude">Claude (MCP)</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+    <button class="tema" type="button" id="tema" aria-label="Alternar tema claro e escuro">Tema</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">Concursos · ENEM · Vestibulares · Processos seletivos</div>
+        <h1>Seu edital vira um plano de estudos. A IA faz a parte chata.</h1>
+        <p class="lead">
+          O Preparador monta seu plano a partir do PDF do edital, organiza o que estudar a cada dia, agenda revisões,
+          guarda aulas do YouTube e questões por assunto. Você usa a IA que já tem: ChatGPT, Claude, Gemini.
+        </p>
+        <div class="botoes">
+          <a class="btn primario" id="dl-windows" href="#instalar">Baixar para Windows <small>.exe</small></a>
+          <a class="btn" id="dl-linux" href="#instalar">Baixar para Linux <small>AppImage</small></a>
+        </div>
+        <p class="aviso-dl muted" id="dl-aviso"></p>
+        <div class="selos">
+          <span class="selo">gratuito</span>
+          <span class="selo">seus dados ficam no seu computador</span>
+          <span class="selo">funciona sem internet</span>
+        </div>
+      </div>
+
+      <div class="janela" role="img" aria-label="Ilustração da tela Plano do dia do Preparador, com revisões, sessões de estudo e aulas">
+        <div class="barra" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="corpo" aria-hidden="true">
+          <div class="lado">
+            <span class="on">Plano do dia</span><span>Aulas</span><span>Questões</span><span>Progresso</span><span>Importar da IA</span><span>Ajustes</span>
+          </div>
+          <div class="tela">
+            <div class="mini-stats">
+              <div><b>12</b>dias seguidos</div>
+              <div><b>9h30</b>na semana</div>
+              <div><b>+14</b>nota líquida</div>
+            </div>
+            <div class="sessao rev">
+              <div class="cab"><b>Revisões programadas</b><span class="chip">15 min cada</span></div>
+              <div class="checks"><span class="on">Crase · 7 dias</span><span>Inquérito policial · 1 dia</span></div>
+            </div>
+            <div class="sessao feita">
+              <div class="cab"><b>Direito Penal</b><span class="chip">feito · 55 min</span></div>
+              <div>Lei penal no tempo e no espaço</div>
+              <div class="aula-mini"><i></i>Lei penal no tempo e no espaço: resumo + questões</div>
+              <div class="checks"><span class="on">Estudei</span><span class="on">Terminei este assunto</span></div>
+            </div>
+            <div class="sessao">
+              <div class="cab"><b>Estatística</b><span class="chip">60 min planejados</span></div>
+              <div>Medidas de posição e dispersão</div>
+              <div class="checks"><span>Estudei</span><span>Terminei este assunto</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="como-funciona">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Como funciona</div>
+        <h2>Você conversa com a IA. O Preparador guarda e organiza.</h2>
+        <p>
+          O sistema já traz os prompts prontos. Você copia, cola na IA junto com o PDF, e traz a resposta de volta.
+          O Preparador confere a resposta antes de salvar, então um erro da IA não bagunça seu plano.
+        </p>
+      </div>
+      <ol class="fluxo">
+        <li><h3>Copie o prompt</h3><p>Preencha o cargo e a banca. O Preparador monta o prompt com tudo o que a IA precisa saber.</p></li>
+        <li><h3>Anexe o PDF</h3><p>Cole o prompt na IA e anexe o edital (ou a prova anterior, para extrair questões).</p></li>
+        <li><h3>Cole a resposta</h3><p>A IA devolve um bloco de texto em formato JSON. Cole no Preparador do jeito que veio.</p></li>
+        <li><h3>Confira e salve</h3><p>Você vê uma prévia: matérias, assuntos e o que muda. Se a IA errou o formato, o sistema gera um pedido de correção.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="bloco" id="modos">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Três jeitos de montar o plano</div>
+        <h2>Com edital, antes do edital ou para várias provas</h2>
+      </div>
+      <div class="cartoes">
+        <div class="cartao">
+          <span class="quando">O edital já saiu</span>
+          <h3>Edital publicado</h3>
+          <p>Anexe o PDF. A IA lê o conteúdo programático do seu cargo, usa o quadro de provas para pesar as matérias e monta a semana.</p>
+        </div>
+        <div class="cartao">
+          <span class="quando">O edital ainda não saiu</span>
+          <h3>Edital previsto</h3>
+          <p>Use o edital anterior do mesmo cargo ou o de um cargo parecido. A IA adapta, inclui leis novas e marca o que é incerto. Quando o edital sair, você atualiza sem perder o progresso.</p>
+        </div>
+        <div class="cartao">
+          <span class="quando">Várias provas ao mesmo tempo</span>
+          <h3>Constância</h3>
+          <p>Liste as provas-alvo e anexe um edital de exemplo para cada uma. As matérias em comum viram uma só, e os assuntos cobrados por mais provas vêm primeiro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="instalar">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Instalar</div>
+        <h2>Baixe, abra e comece</h2>
+        <p>Os instaladores ficam na página de <a id="link-releases" href="#">versões do projeto</a>.</p>
+      </div>
+      <div class="duas">
+        <div>
+          <h3>Windows 10 e 11</h3>
+          <ol>
+            <li>Baixe o arquivo que termina em <code>-setup.exe</code>.</li>
+            <li>Abra e siga o instalador.</li>
+          </ol>
+          <div class="atencao">
+            <b>O Windows pode avisar "O Windows protegeu o computador".</b>
+            Isso acontece com programas sem assinatura paga. Clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.
+          </div>
+        </div>
+        <div>
+          <h3>Linux</h3>
+          <ol>
+            <li>Baixe o arquivo <code>.AppImage</code>.</li>
+            <li>Dê permissão de execução: botão direito → Propriedades → "Permitir executar", ou no terminal:</li>
+          </ol>
+          <pre>chmod +x Preparador_*.AppImage
+./Preparador_*.AppImage</pre>
+          <div class="dica">
+            <b>Não abriu?</b>
+            Em Ubuntu 22.04 ou mais novo, instale o FUSE: <code>sudo apt install libfuse2</code> (no 24.04: <code>libfuse2t64</code>).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="guia">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Guia de uso</div>
+        <h2>Do primeiro perfil à rotina diária</h2>
+      </div>
+      <div class="guia">
+        <nav class="indice" aria-label="Passos do guia">
+          <a href="#p-perfil">1. Perfil</a>
+          <a href="#p-plano">2. Plano</a>
+          <a href="#p-dia">3. Plano do dia</a>
+          <a href="#p-aulas">4. Aulas</a>
+          <a href="#p-questoes">5. Questões</a>
+          <a href="#p-edital-saiu">6. Saiu o edital</a>
+          <a href="#p-unir">7. Duas provas</a>
+          <a href="#p-ajustes">8. Ajustes e backup</a>
+        </nav>
+        <div class="passos">
+          <div class="passo" id="p-perfil">
+            <h3><span>01</span>Crie um perfil</h3>
+            <p>Cada perfil é um objetivo: "PC/SE 2027", "ENEM", "Vestibulares". Informe o nome, o idioma das aulas e quantas horas por dia você pode estudar.</p>
+            <div class="dica"><b>Quer ver antes?</b>Na primeira vez, o Preparador cria um perfil de exemplo pronto (Polícia Civil de Sergipe, 120 assuntos, aulas e questões). Ele também pode ser criado depois, na tela Perfis.</div>
+          </div>
+
+          <div class="passo" id="p-plano">
+            <h3><span>02</span>Gere o plano com a IA</h3>
+            <ol>
+              <li>Vá em <b>Importar da IA → Plano de estudos</b> e escolha o modo: edital publicado, edital previsto ou constância.</li>
+              <li>Preencha cargo, banca e, se quiser, observações ("quero mais peso em Penal").</li>
+              <li>Clique em <b>Copiar prompt</b>, cole na IA e <b>anexe o PDF</b> do edital na mesma mensagem.</li>
+              <li>Copie a resposta inteira da IA e cole em <b>Cole a resposta da IA</b>. Pode colar com texto antes ou depois: o Preparador acha o JSON.</li>
+              <li>Confira a prévia e clique em <b>Salvar plano</b>.</li>
+            </ol>
+            <div class="dica"><b>A IA errou o formato?</b>O Preparador mostra onde está o erro e oferece o botão <b>Copiar prompt de correção</b>. Cole na mesma conversa e a IA corrige.</div>
+          </div>
+
+          <div class="passo" id="p-dia">
+            <h3><span>03</span>Estude pelo Plano do dia</h3>
+            <p>A cada dia o Preparador mostra as matérias da semana-modelo e o próximo assunto pendente de cada uma, com as aulas e três questões.</p>
+            <ul>
+              <li>Marque <b>Estudei</b> e ajuste os minutos. Isso conta nas horas da semana e na sequência de dias.</li>
+              <li>Marque <b>Terminei este assunto</b> para avançar. O assunto volta como <b>revisão</b> 1, 7 e 30 dias depois.</li>
+              <li>Dia sem matérias (o domingo, por padrão) vira dia de <b>simulado</b> misto.</li>
+              <li>Estudou algo fora do plano? Use <b>Registrar estudo fora do plano</b>.</li>
+            </ul>
+          </div>
+
+          <div class="passo" id="p-aulas">
+            <h3><span>04</span>Encontre aulas no YouTube</h3>
+            <ol>
+              <li>Em <b>Importar da IA → Aulas do YouTube</b>, copie o prompt. Ele já leva a lista dos seus assuntos e o idioma do perfil.</li>
+              <li>Use uma IA <b>com busca na web</b>, para ela achar vídeos de verdade.</li>
+              <li>Cole a resposta. Cada aula vai direto para o assunto certo.</li>
+              <li>Na tela <b>Aulas</b>, clique em <b>Verificar links</b>. Vídeos removidos ganham o botão <b>Pedir substituto</b>.</li>
+            </ol>
+            <p class="muted">Você também pode cadastrar uma aula à mão, colando o link.</p>
+          </div>
+
+          <div class="passo" id="p-questoes">
+            <h3><span>05</span>Monte seu banco de questões</h3>
+            <p>Em <b>Importar da IA → Questões</b> há dois caminhos:</p>
+            <ul>
+              <li><b>Gerar questões inéditas</b> no estilo da banca, certo/errado ou múltipla escolha, por matéria ou assunto.</li>
+              <li><b>Extrair de prova anterior</b>: anexe o PDF da prova e o do gabarito. A IA transcreve as questões sem reescrever, pula as anuladas e classifica cada uma num assunto do seu plano. Provas grandes vêm em partes de 40: peça "continue" e cole cada parte.</li>
+            </ul>
+            <p>Na tela <b>Questões</b>, filtre por matéria, pelas que você errou ou pelas que ainda não respondeu.</p>
+          </div>
+
+          <div class="passo" id="p-edital-saiu">
+            <h3><span>06</span>Saiu o edital? Atualize sem perder nada</h3>
+            <p>Gere o plano de novo no modo <b>Edital publicado</b>. O prompt envia à IA a lista dos assuntos que você já tem, pedindo para reaproveitar os mesmos identificadores. A prévia mostra quantos assuntos mantêm o progresso e avisa se algo seria perdido.</p>
+          </div>
+
+          <div class="passo" id="p-unir">
+            <h3><span>07</span>Estude para duas provas ao mesmo tempo</h3>
+            <p>Em <b>Perfis → Unir dois perfis</b>, escolha os dois perfis. O Preparador cria um perfil novo com as provas dos dois, juntando as matérias em comum, e leva o progresso de cada um. Os perfis originais continuam intactos.</p>
+          </div>
+
+          <div class="passo" id="p-ajustes">
+            <h3><span>08</span>Ajustes e backup</h3>
+            <ul>
+              <li><b>Aparência</b>: cor da interface e tema claro ou escuro.</li>
+              <li><b>Semana-modelo</b>: troque as matérias de cada dia.</li>
+              <li><b>Revisões</b>: mude os intervalos (padrão: 1, 7 e 30 dias).</li>
+              <li><b>Prompts</b>: edite os textos que vão para a IA.</li>
+              <li><b>Backup</b>: exporte o perfil inteiro como texto e guarde num arquivo. Restaurar cria um perfil novo.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="claude">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Para quem assina o Claude</div>
+        <h2>Converse com seu plano de estudos</h2>
+        <p>
+          O Preparador tem um servidor MCP. Com ele, o Claude lê seu plano, registra o que você estudou, aplica questões e
+          importa planos, aulas e questões direto, sem copiar e colar. Os prompts do sistema aparecem no Claude já preenchidos.
+        </p>
+      </div>
+      <div class="duas">
+        <div>
+          <h3>Ligar</h3>
+          <ol>
+            <li>No Preparador, vá em <b>Ajustes → Conectar com agentes de IA</b> e marque <b>Servidor MCP ligado</b>.</li>
+            <li><b>Claude Desktop:</b> copie a configuração mostrada, abra Configurações → Desenvolvedor → Editar configuração, junte ao arquivo e reinicie o Claude.</li>
+            <li><b>Claude Code:</b> copie o comando mostrado e rode no terminal.</li>
+          </ol>
+          <div class="atencao"><b>O Preparador precisa estar aberto.</b>No Claude Desktop ele é aberto sozinho, se estiver fechado. O servidor só aceita conexões do seu próprio computador.</div>
+        </div>
+        <div>
+          <h3>Experimente pedir</h3>
+          <div class="pedidos">
+            <span>"O que tenho para estudar hoje?"</span>
+            <span>"Estudei 50 minutos de Penal e terminei o assunto"</span>
+            <span>"Me faça 5 questões de Constitucional que eu errei"</span>
+            <span>"Como está meu progresso nesta semana?"</span>
+            <span>"Ache aulas no YouTube para os assuntos sem aula"</span>
+            <span>"Leia este edital e atualize meu plano"</span>
+          </div>
+          <p class="muted">Ao trocar o plano, o Claude sempre mostra a prévia e só salva com a sua aprovação.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="duvidas">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Dúvidas</div>
+        <h2>Perguntas frequentes</h2>
+      </div>
+      <details>
+        <summary>Preciso pagar alguma IA?</summary>
+        <div><p>Não. Qualquer IA que aceite anexar PDF funciona, inclusive nas versões gratuitas. Para buscar aulas, use uma que pesquise na web. A conexão direta por MCP é para quem já assina o Claude.</p></div>
+      </details>
+      <details>
+        <summary>Onde ficam meus dados?</summary>
+        <div><p>Num banco de dados no seu computador. Nada é enviado para servidores do Preparador. O que vai para a IA é só o que você mesmo cola ou anexa na conversa.</p></div>
+      </details>
+      <details>
+        <summary>Funciona sem internet?</summary>
+        <div><p>Sim. O plano do dia, as revisões, as questões e o progresso funcionam offline. Só precisam de internet as conversas com a IA, assistir às aulas e a verificação dos links.</p></div>
+      </details>
+      <details>
+        <summary>E se a IA inventar um link de aula ou errar uma questão?</summary>
+        <div>
+          <p>O botão <b>Verificar links</b> confere no YouTube se cada vídeo existe. Questões geradas ou com gabarito resolvido pela IA ficam marcadas, para você conferir na lei ou no material.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Posso mudar o plano depois?</summary>
+        <div><p>Sim: reimporte um plano novo (o progresso dos assuntos equivalentes é mantido) ou edite a semana-modelo e os intervalos de revisão em Ajustes.</p></div>
+      </details>
+      <details>
+        <summary>Tem versão para Mac ou celular?</summary>
+        <div><p>Por enquanto, só Windows e Linux.</p></div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Preparador · organizador de estudos de código aberto</span>
+    <a id="link-repo" href="#">Código-fonte</a>
+  </div>
+</footer>
+
+<script>
+  // Tema: segue o sistema; o botão alterna e lembra a escolha neste navegador.
+  (function () {
+    var raiz = document.documentElement;
+    try {
+      var salvo = localStorage.getItem("tema");
+      if (salvo) raiz.dataset.theme = salvo;
+    } catch (e) {}
+    document.getElementById("tema").addEventListener("click", function () {
+      var escuro = raiz.dataset.theme ? raiz.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+      raiz.dataset.theme = escuro ? "light" : "dark";
+      try { localStorage.setItem("tema", raiz.dataset.theme); } catch (e) {}
+    });
+  })();
+
+  // Downloads: descobre o repositório pelo endereço do GitHub Pages (dono.github.io/repositorio)
+  // e aponta para os arquivos da última versão publicada.
+  (function () {
+    var host = location.hostname;
+    var aviso = document.getElementById("dl-aviso");
+    if (!/\.github\.io$/.test(host)) {
+      aviso.textContent = "Os instaladores ficam na página de versões do repositório no GitHub.";
+      return;
+    }
+    var dono = host.split(".")[0];
+    var repo = location.pathname.split("/").filter(Boolean)[0] || dono + ".github.io";
+    var base = "https://github.com/" + dono + "/" + repo;
+    var versoes = base + "/releases/latest";
+    document.getElementById("link-repo").href = base;
+    document.getElementById("link-releases").href = versoes;
+    var win = document.getElementById("dl-windows");
+    var lin = document.getElementById("dl-linux");
+    win.href = versoes;
+    lin.href = versoes;
+    fetch("https://api.github.com/repos/" + dono + "/" + repo + "/releases/latest")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rel) {
+        if (!rel || !rel.assets) {
+          aviso.textContent = "Ainda não há versão publicada. Acompanhe a página de versões.";
+          return;
+        }
+        rel.assets.forEach(function (a) {
+          if (/-setup\.exe$/i.test(a.name)) win.href = a.browser_download_url;
+          if (/\.AppImage$/i.test(a.name)) lin.href = a.browser_download_url;
+        });
+        aviso.textContent = "Versão " + rel.tag_name + ".";
+      })
+      .catch(function () {});
+  })();
+</script>
+</body>
+</html>

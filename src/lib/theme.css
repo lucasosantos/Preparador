@@ -1,0 +1,102 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/source-sans-3";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+:root {
+  --bg: #f5f6f2; --surface: #ffffff; --fg: #17211c; --muted: #5b665f; --line: #dde1d9;
+  --accent: #1f7a4d; --accent-soft: #e3f1e8; --gold: #9a720c; --gold-soft: #f8efd6;
+  --ok: #1f7a4d; --ok-soft: #e3f1e8; --bad: #b3362b; --bad-soft: #fbe7e4;
+  --play: #cc2a22; --play-fg: #ffffff;
+  --display: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --body: "Source Sans 3 Variable", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --surface: #18201b; --fg: #e7ece8; --muted: #9aa69e; --line: #2a352e;
+    --accent: #4cc287; --accent-soft: #1c3226; --gold: #e0b84a; --gold-soft: #332a12;
+    --ok: #4cc287; --ok-soft: #1c3226; --bad: #ef7b6f; --bad-soft: #3a1c19;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --surface: #18201b; --fg: #e7ece8; --muted: #9aa69e; --line: #2a352e;
+  --accent: #4cc287; --accent-soft: #1c3226; --gold: #e0b84a; --gold-soft: #332a12;
+  --ok: #4cc287; --ok-soft: #1c3226; --bad: #ef7b6f; --bad-soft: #3a1c19;
+  color-scheme: dark;
+}
+
+/* Cor de destaque escolhida em Ajustes (sem atributo = verde). O escuro tem seletor mais específico. */
+:root[data-cor="azul"] { --accent: #1d5fa8; --accent-soft: #e2ecf8; }
+:root[data-cor="roxo"] { --accent: #6b3fa0; --accent-soft: #eee6f7; }
+:root[data-cor="laranja"] { --accent: #b4501a; --accent-soft: #fbeadf; }
+:root[data-cor="rosa"] { --accent: #b0306a; --accent-soft: #f9e3ee; }
+:root[data-cor="grafite"] { --accent: #3d4a55; --accent-soft: #e6eaee; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-cor="azul"] { --accent: #6aa8ec; --accent-soft: #18283a; }
+  :root:not([data-theme="light"])[data-cor="roxo"] { --accent: #b48ae8; --accent-soft: #2a2038; }
+  :root:not([data-theme="light"])[data-cor="laranja"] { --accent: #f0955a; --accent-soft: #3a2416; }
+  :root:not([data-theme="light"])[data-cor="rosa"] { --accent: #f07aaf; --accent-soft: #3a1b2a; }
+  :root:not([data-theme="light"])[data-cor="grafite"] { --accent: #a9b7c4; --accent-soft: #232a31; }
+}
+:root[data-theme="dark"][data-cor="azul"] { --accent: #6aa8ec; --accent-soft: #18283a; }
+:root[data-theme="dark"][data-cor="roxo"] { --accent: #b48ae8; --accent-soft: #2a2038; }
+:root[data-theme="dark"][data-cor="laranja"] { --accent: #f0955a; --accent-soft: #3a2416; }
+:root[data-theme="dark"][data-cor="rosa"] { --accent: #f07aaf; --accent-soft: #3a1b2a; }
+:root[data-theme="dark"][data-cor="grafite"] { --accent: #a9b7c4; --accent-soft: #232a31; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.5 var(--body); }
+
+h1 { font: 800 clamp(26px, 4vw, 34px)/1.1 var(--display); margin: 0; text-wrap: balance; }
+h2 { font: 800 22px var(--display); margin: 0; text-wrap: balance; }
+h3 { font: 700 17px var(--display); margin: 0; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.tip { font-size: 14px; color: var(--muted); margin: 0; }
+.err { color: var(--bad); font-size: 14px; margin: 0; }
+.empty { color: var(--muted); font-size: 15px; margin: 0; }
+
+button {
+  font: 600 14px var(--body); color: var(--fg); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer;
+}
+a.btn {
+  display: inline-block; text-decoration: none; font: 600 14px var(--body); color: var(--fg);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px;
+}
+a.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.small.btn, button.small { font-size: 13px; padding: 5px 10px; }
+button:hover, a.btn:hover { border-color: var(--accent); }
+button:disabled { opacity: .55; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+button.danger { color: var(--bad); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+input[type="text"], input[type="url"], input[type="number"], select, textarea {
+  font: 15px var(--body); color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px;
+}
+input[type="number"] { font-family: var(--mono); width: 80px; }
+textarea { font: 13px/1.45 var(--mono); width: 100%; resize: vertical; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+}
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.chip {
+  font: 500 12px var(--mono); padding: 2px 8px; border-radius: 99px;
+  background: var(--bg); color: var(--muted); white-space: nowrap;
+}
+.chip.ok { background: var(--accent-soft); color: var(--accent); }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
