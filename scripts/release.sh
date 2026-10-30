@@ -5,7 +5,7 @@
 #   scripts/release.sh --so-linux       só o AppImage
 #   scripts/release.sh --so-windows     só o instalador de Windows
 #   scripts/release.sh --versao 0.2.0   troca a versão em package.json, tauri.conf.json e Cargo.toml antes
-#   scripts/release.sh --publicar       depois de compilar: cria a tag vX.Y.Z, faz push e anexa os
+#   scripts/release.sh --publicar       depois de compilar: cria a tag X.Y.Z, faz push e anexa os
 #                                       instaladores a uma release em rascunho (precisa do gh logado)
 #   scripts/release.sh --so-pagina      só atualiza os botões de download de docs/index.html
 #
@@ -51,8 +51,9 @@ if [ -n "$NOVA_VERSAO" ]; then
   ' "$NOVA_VERSAO"
 fi
 VERSAO=$(node -p 'require("./src-tauri/tauri.conf.json").version')
-TAG="v$VERSAO"
-SAIDA="release/$TAG"
+# as releases do GitHub usam a tag sem "v" (0.1.0, 0.2.0); os links de download dependem disso
+TAG="$VERSAO"
+SAIDA="release/v$VERSAO"
 
 # ---------- dependências ----------
 etapa "Conferindo dependências"
