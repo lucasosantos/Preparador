@@ -4,9 +4,12 @@
   import { app } from "$lib/app.svelte";
   import { adicionarAula, existeAula, listarAulas, verificarAula, ytInfo, type Aula } from "$lib/aulas";
   import AulaItem from "$lib/components/AulaItem.svelte";
+  import TextoItem from "$lib/components/TextoItem.svelte";
+  import { listarTextos, type ItemBiblioteca } from "$lib/textos";
 
   const plano = $derived(app.plano);
   let aulas = $state.raw<Aula[]>([]);
+  let textos = $state.raw<ItemBiblioteca[]>([]);
 
   const materiaInicial = Number(page.url.searchParams.get("materia")) || 0;
   let materiaId = $state(materiaInicial);
@@ -20,7 +23,7 @@
 
   async function carregar() {
     if (!plano || app.perfilId == null) return;
-    aulas = await listarAulas(app.perfilId, plano.id);
+    [aulas, textos] = await Promise.all([listarAulas(app.perfilId, plano.id), listarTextos(app.perfilId, plano)]);
   }
   $effect(() => {
     void plano;
@@ -60,13 +63,19 @@
   const visiveis = $derived(
     aulas.filter((a) => (filtro === "pendentes" ? !a.assistida_em : filtro === "quebradas" ? a.status_link === "quebrado" : true)),
   );
-  const assistidas = $derived(aulas.filter((a) => a.assistida_em).length);
+  const textosVisiveis = $derived(textos.filter((t) => (filtro === "pendentes" ? !t.lidaEm : filtro !== "quebradas")));
+  const assistidas = $derived(aulas.filter((a) => a.assistida_em).length + textos.filter((t) => t.lidaEm).length);
+  const total = $derived(aulas.length + textos.length);
   const quebradas = $derived(aulas.filter((a) => a.status_link === "quebrado").length);
   const naoVerificadas = $derived(aulas.filter((a) => a.status_link === "nao_verificado").length);
 
   function grupo(mid: number) {
     const ordem = (a: Aula) => (a.assunto_id == null ? -1 : (plano!.assunto.get(a.assunto_id)?.ordem ?? 0));
     return visiveis.filter((a) => a.materia_id === mid).sort((a, b) => ordem(a) - ordem(b));
+  }
+
+  function textosDe(mid: number) {
+    return textosVisiveis.filter((t) => t.materiaId === mid).sort((a, b) => plano!.assunto.get(a.assuntoId)!.ordem - plano!.assunto.get(b.assuntoId)!.ordem);
   }
 
   function alternar(mid: number, aberto: boolean) {
@@ -90,6 +99,17 @@
         <a class="btn primary" href={`/importar?aba=aulas${materiaId ? `&materia=${materiaId}` : ""}`}>Abrir prompt de busca</a>
       </div>
       <p class="tip">O prompt já leva a lista de assuntos com os ids do seu plano e o idioma do perfil. A resposta vai direto para o assunto certo.</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Sem vídeo bom? Gere uma aula em texto</h3>
+        <div class="row">
+          <a class="btn" href={`/importar?aba=aulas&modo=apostila${materiaId ? `&materia=${materiaId}` : ""}`}>Usar minha apostila</a>
+          <a class="btn" href={`/importar?aba=aulas&modo=texto${materiaId ? `&materia=${materiaId}` : ""}${assuntoId ? `&assunto=${assuntoId}` : ""}`}>Gerar aula em texto</a>
+        </div>
+      </div>
+      <p class="tip">A IA escreve uma aula sobre o assunto, pensada para o seu perfil e para as provas do plano, e lista as fontes no final. Tem apostila em PDF? A IA separa o conteúdo pelos assuntos do plano e gera as aulas com base nela.</p>
     </section>
 
     <form class="card" onsubmit={adicionar}>
@@ -116,7 +136,7 @@
     <section class="card">
       <div class="card-head">
         <h3>Suas aulas</h3>
-        <span class="chip" class:ok={aulas.length > 0 && assistidas === aulas.length}>{assistidas}/{aulas.length} assistidas</span>
+        <span class="chip" class:ok={total > 0 && assistidas === total}>{assistidas}/{total} vistas</span>
       </div>
       <div class="row">
         <select bind:value={filtro} aria-label="Filtro">
@@ -129,19 +149,21 @@
         </button>
       </div>
       <p class="tip">A verificação consulta o YouTube e marca vídeos removidos ou privados. Para esses, use "Pedir substituto".</p>
-      {#if !visiveis.length}<p class="empty">Nenhuma aula aqui.</p>{/if}
+      {#if !visiveis.length && !textosVisiveis.length}<p class="empty">Nenhuma aula aqui.</p>{/if}
       {#each plano.materias as m (m.id)}
         {@const lista = grupo(m.id)}
-        {#if lista.length}
-          {@const vistos = lista.filter((a) => a.assistida_em).length}
+        {@const txt = textosDe(m.id)}
+        {#if lista.length || txt.length}
+          {@const vistos = lista.filter((a) => a.assistida_em).length + txt.filter((t) => t.lidaEm).length}
           <details class="group" open={abertos.has(m.id)} ontoggle={(e) => alternar(m.id, e.currentTarget.open)}>
             <summary>
               <span class="chev" aria-hidden="true"></span>
               <strong class="gname">{m.nome}</strong>
-              <span class="chip" class:ok={vistos === lista.length}>{vistos}/{lista.length}</span>
+              <span class="chip" class:ok={vistos === lista.length + txt.length}>{vistos}/{lista.length + txt.length}</span>
             </summary>
             <div class="lista">
               {#each lista as a (a.id)}<AulaItem {a} removivel onmudou={carregar} />{/each}
+              {#each txt as t (t.id)}<TextoItem {t} removivel onmudou={carregar} />{/each}
             </div>
           </details>
         {/if}

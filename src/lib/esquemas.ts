@@ -116,6 +116,32 @@ export const AulasSchema = z.object({
 });
 export type AulasJson = z.infer<typeof AulasSchema>;
 
+const camposAulaTexto = {
+  materiaId: id.nullish(),
+  assuntoId: id,
+  titulo: texto(200),
+  idioma: z.string().trim().max(20).nullish(),
+  resumo: texto(1500),
+  secoes: z.array(z.object({ titulo: texto(200), texto: texto(12000) })).min(1).max(20),
+  pontosDeProva: z.array(texto(600)).max(20).default([]),
+  // sem fonte a aula não entra: o aluno precisa poder conferir o conteúdo
+  fontes: z.array(z.object({ titulo: texto(300), url: z.string().trim().url("link inválido").nullish() })).min(1, "informe ao menos uma fonte").max(20),
+  // nome da apostila quando a aula foi tirada de um PDF do aluno
+  apostila: z.string().trim().max(200).nullish(),
+};
+
+export const AulaTextoSchema = z.object({ schema: z.literal("preparador.aulaTexto/1"), ...camposAulaTexto });
+export type AulaTextoJson = z.infer<typeof AulaTextoSchema>;
+
+export const ApostilaSchema = z.object({
+  schema: z.literal("preparador.apostila/1"),
+  apostila: texto(200),
+  aulas: z.array(z.object(camposAulaTexto)).min(1).max(60),
+  // trechos da apostila que não se encaixam em nenhum assunto do plano
+  foraDoPlano: z.array(texto(300)).max(60).default([]),
+});
+export type ApostilaJson = z.infer<typeof ApostilaSchema>;
+
 export const QuestoesSchema = z.object({
   schema: z.literal("preparador.questoes/1"),
   questoes: z

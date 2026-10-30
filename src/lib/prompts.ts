@@ -1,6 +1,16 @@
 import { execute, select } from "./db";
 
-export type ChavePrompt = "plano.edital" | "plano.preedital" | "plano.constancia" | "perfis.unir" | "questoes.extrair" | "aulas.youtube" | "aulas.substituto" | "questoes.gerar";
+export type ChavePrompt =
+  | "plano.edital"
+  | "plano.preedital"
+  | "plano.constancia"
+  | "perfis.unir"
+  | "questoes.extrair"
+  | "aulas.youtube"
+  | "aulas.substituto"
+  | "aulas.texto"
+  | "aulas.apostila"
+  | "questoes.gerar";
 
 type Definicao = { nome: string; descricao: string; variaveis: string[]; padrao: string };
 
@@ -195,6 +205,108 @@ Responda APENAS com este JSON:
   "aulas": [
     { "materiaId": "{{materiaId}}", "assuntoId": "{{assuntoId}}", "titulo": "título do vídeo", "url": "https://www.youtube.com/watch?v=...", "canal": "nome do canal", "duracaoMin": 30 }
   ]
+}`,
+  },
+  "aulas.texto": {
+    nome: "Gerar aula em texto",
+    descricao: "Escreve uma aula em texto sobre um assunto do plano, para quando não há vídeo bom. Sempre termina com as fontes.",
+    variaveis: ["idioma", "perfil", "horas", "objetivo", "provas", "materiaId", "assuntoId", "materia", "assunto", "detalhe", "relevancia", "vizinhos", "complemento"],
+    padrao: `Você é um professor experiente em preparação para concursos, ENEM e vestibulares no Brasil. Não encontrei videoaula boa para um assunto do meu plano de estudos e quero uma AULA EM TEXTO, completa e didática, escrita para mim.
+
+Quem sou eu:
+- Aluno: {{perfil}}, estudo {{horas}} horas por dia
+- Idioma da aula: {{idioma}}
+- Objetivo: {{objetivo}}
+- Provas-alvo:
+{{provas}}
+
+Assunto da aula:
+- Matéria: {{materia}}
+- Assunto: {{assunto}}
+- Subtópicos que o edital cita: {{detalhe}}
+- Relevância no meu plano: {{relevancia}}
+- Onde ele fica no plano: {{vizinhos}}
+{{complemento}}
+Como escrever:
+1. Foque no que essas provas e essas bancas cobram. Cubra todos os subtópicos citados, na ordem didática, sem fugir do assunto.
+2. Explique como um bom professor: conceito, por que importa, exemplos concretos e, quando houver, casos de prova. Use linguagem clara; defina termos técnicos na primeira vez.
+3. Quando o assunto tiver base legal, cite os artigos e transcreva os trechos-chave. Use a legislação vigente e avise se houve mudança recente.
+4. Em "pontosDeProva", liste como a banca costuma cobrar o tema: pegadinhas, exceções e palavras que mudam o gabarito.
+5. Tamanho: o suficiente para estudar o assunto numa sessão de estudo, sem enrolação.
+6. No campo "texto" de cada seção, separe parágrafos com uma linha em branco e use linhas começando com "- " para listas. Pode usar **negrito** para termos-chave. Não use outros recursos de markdown nem HTML.
+7. FONTES: em "fontes", liste SEMPRE as fontes em que a aula se baseia (lei com número e artigos, súmulas, doutrina com autor e obra, documentos e sites oficiais). Inclua "url" só quando tiver certeza de que o endereço existe (ex.: planalto.gov.br); senão use null. Não invente obras, autores nem links.
+
+Ids do assunto (use exatamente): materiaId "{{materiaId}}", assuntoId "{{assuntoId}}".
+
+Responda APENAS com este JSON, sem texto antes ou depois e sem cercas de código:
+{
+  "schema": "preparador.aulaTexto/1",
+  "materiaId": "{{materiaId}}",
+  "assuntoId": "{{assuntoId}}",
+  "titulo": "título da aula",
+  "idioma": "{{idioma}}",
+  "resumo": "em 2 a 4 frases, o que a aula ensina",
+  "secoes": [
+    { "titulo": "título da seção", "texto": "parágrafo\\n\\n- item de lista\\n- outro item" }
+  ],
+  "pontosDeProva": ["como a banca cobra e as pegadinhas"],
+  "fontes": [
+    { "titulo": "Constituição Federal de 1988, arts. 5º a 17", "url": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" }
+  ]
+}`,
+  },
+  "aulas.apostila": {
+    nome: "Aulas a partir de apostila",
+    descricao: "Lê a apostila em PDF (anexada), encaixa cada parte num assunto do plano e escreve uma aula em texto por assunto, com base na apostila.",
+    variaveis: ["apostila", "idioma", "perfil", "horas", "objetivo", "provas", "assuntos", "complemento"],
+    padrao: `Você é um professor experiente em preparação para concursos, ENEM e vestibulares no Brasil. ANEXEI A ESTA MENSAGEM O PDF DA MINHA APOSTILA: {{apostila}}.
+
+Quero transformar o conteúdo dela em aulas em texto, organizadas pelos assuntos do meu plano de estudos.
+
+Quem sou eu:
+- Aluno: {{perfil}}, estudo {{horas}} horas por dia
+- Idioma das aulas: {{idioma}}
+- Objetivo: {{objetivo}}
+- Provas-alvo:
+{{provas}}
+{{complemento}}
+Tarefa:
+1. Leia o PDF INTEIRO, não só o começo. Se o PDF não estiver anexado ou não puder ser lido, NÃO invente nada: responda apenas pedindo o PDF de novo.
+2. Para cada capítulo ou trecho da apostila, decida em qual assunto da lista abaixo ele se encaixa. Use exatamente os ids da lista. Vários trechos do mesmo assunto viram UMA aula só.
+3. Escreva uma aula por assunto coberto pela apostila. A aula deve se BASEAR NA APOSTILA: siga a explicação, os exemplos e a ordem dela, reorganizando para ficar didática. Não copie páginas inteiras; resuma e explique.
+4. Se a apostila estiver desatualizada (ex.: lei alterada) ou tiver um erro, corrija e avise no próprio texto, dizendo o que mudou.
+5. Foque no que essas provas e essas bancas cobram. Em "pontosDeProva", liste como a banca costuma cobrar o tema: pegadinhas, exceções e palavras que mudam o gabarito.
+6. Assuntos do plano que a apostila não cobre: não crie aula para eles. Trechos da apostila que não se encaixam em nenhum assunto: liste o título deles em "foraDoPlano".
+7. No campo "texto" de cada seção, separe parágrafos com uma linha em branco e use linhas começando com "- " para listas. Pode usar **negrito** para termos-chave. Não use outros recursos de markdown nem HTML.
+8. FONTES: em cada aula, a PRIMEIRA fonte é sempre a apostila, com as páginas usadas (ex.: "{{apostila}}, p. 12–18", "url": null). Depois, liste as leis com artigos, súmulas e demais fontes que a apostila cita ou que você usou para corrigi-la. Inclua "url" só quando tiver certeza de que o endereço existe; senão use null. Não invente obras, autores nem links.
+9. Em cada aula, preencha "apostila" com "{{apostila}}".
+10. Se a apostila cobrir muitos assuntos, responda em partes de até 8 aulas por resposta, cada parte como um JSON completo. Eu peço "continue" para a próxima parte.
+
+Assuntos do meu plano (materiaId | assuntoId | nome):
+{{assuntos}}
+
+Responda APENAS com este JSON, sem texto antes ou depois e sem cercas de código:
+{
+  "schema": "preparador.apostila/1",
+  "apostila": "{{apostila}}",
+  "aulas": [
+    {
+      "materiaId": "id",
+      "assuntoId": "id",
+      "titulo": "título da aula",
+      "idioma": "{{idioma}}",
+      "apostila": "{{apostila}}",
+      "resumo": "em 2 a 4 frases, o que a aula ensina",
+      "secoes": [
+        { "titulo": "título da seção", "texto": "parágrafo\\n\\n- item de lista\\n- outro item" }
+      ],
+      "pontosDeProva": ["como a banca cobra e as pegadinhas"],
+      "fontes": [
+        { "titulo": "{{apostila}}, p. 12–18", "url": null }
+      ]
+    }
+  ],
+  "foraDoPlano": ["título de trecho da apostila sem assunto correspondente"]
 }`,
   },
   "questoes.extrair": {

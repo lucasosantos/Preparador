@@ -6,12 +6,23 @@
   import ColarJson from "$lib/components/ColarJson.svelte";
   import CopiarPrompt from "$lib/components/CopiarPrompt.svelte";
   import { DIAS } from "$lib/datas";
-  import { AulasSchema, PlanoSchema, QuestoesSchema, type PlanoJson } from "$lib/esquemas";
+  import { ApostilaSchema, AulaTextoSchema, AulasSchema, PlanoSchema, QuestoesSchema, type ApostilaJson, type AulaTextoJson, type PlanoJson } from "$lib/esquemas";
   import { IDIOMAS } from "$lib/perfis";
   import { importarPlano, listaAssuntosPrompt, planoAtualPrompt, previaPlano, type Previa } from "$lib/planos";
   import { leituraPdfsConstancia, listaProvasAlvo, montarPrompt, type ProvaAlvo } from "$lib/prompts";
   import { importarQuestoes, previaQuestoes, type PreviaQuestoes } from "$lib/questoes";
   import { select } from "$lib/db";
+  import { sugestoesAcervo } from "$lib/acervo";
+  import {
+    previaApostila,
+    previaTexto,
+    salvarApostila,
+    salvarTexto,
+    varsApostila,
+    varsAulaTexto,
+    type PreviaApostila,
+    type PreviaTexto,
+  } from "$lib/textos";
 
   type Aba = "plano" | "aulas" | "questoes";
   let aba = $state<Aba>((page.url.searchParams.get("aba") as Aba) ?? "plano");
@@ -72,9 +83,10 @@
     salvando = true;
     await importarPlano(app.perfilId!, previa.dados, previa.bruto);
     await app.recarregarPlano();
+    const doAcervo = app.plano ? await sugestoesAcervo(app.perfilId!, app.plano) : [];
     salvando = false;
     previa = null;
-    goto("/hoje");
+    goto(doAcervo.length ? "/acervo" : "/hoje");
   }
 
   // ---------- aulas ----------
@@ -122,6 +134,62 @@
     await importarAulas(app.perfilId!, previaA.p, previaA.bruto);
     okAulas = `${previaA.p.validas.length} aula(s) adicionada(s). Verifique os links na tela Aulas.`;
     previaA = null;
+  }
+
+  // ---------- aula em texto ----------
+  type ModoAula = "youtube" | "texto" | "apostila";
+  const modoUrl = page.url.searchParams.get("modo");
+  let aModo = $state<ModoAula>(modoUrl === "texto" || modoUrl === "apostila" ? modoUrl : "youtube");
+  let tMateria = $state<number>(Number(page.url.searchParams.get("materia")) || 0);
+  let tAssunto = $state<number>(Number(page.url.searchParams.get("assunto")) || 0);
+  let tNotas = $state("");
+  let promptTexto = $state("");
+  let previaT = $state<{ dados: AulaTextoJson; p: PreviaTexto } | null>(null);
+  let okTexto = $state<{ id: string; titulo: string } | null>(null);
+
+  $effect(() => {
+    if (!plano) return;
+    if (!plano.materia.has(tMateria)) tMateria = plano.assunto.get(tAssunto)?.materia_id ?? plano.materias[0]?.id ?? 0;
+    if (plano.assunto.get(tAssunto)?.materia_id !== tMateria) tAssunto = plano.materia.get(tMateria)?.assuntos[0]?.id ?? 0;
+  });
+  $effect(() => {
+    if (!plano || !app.perfil || !plano.assunto.has(tAssunto)) return void (promptTexto = "");
+    montarPrompt("aulas.texto", varsAulaTexto(app.perfil, plano, tAssunto, tNotas)).then((p) => (promptTexto = p));
+  });
+
+  function validarTexto(dados: AulaTextoJson) {
+    okTexto = null;
+    previaT = { dados, p: previaTexto(plano!, dados) };
+  }
+  async function salvarAulaTexto() {
+    if (!previaT?.p.ok) return;
+    const { materiaId, assuntoId } = previaT.p;
+    okTexto = { id: await salvarTexto(app.perfilId!, { materiaId, assuntoId }, previaT.dados), titulo: previaT.dados.titulo };
+    previaT = null;
+  }
+
+  // ---------- apostila ----------
+  let apNome = $state("");
+  let apMateria = $state<number>(Number(page.url.searchParams.get("materia")) || 0);
+  let apNotas = $state("");
+  let promptApostila = $state("");
+  let previaAp = $state<{ p: PreviaApostila; apostila: string } | null>(null);
+  let okApostila = $state("");
+
+  $effect(() => {
+    if (!plano || !app.perfil) return;
+    montarPrompt("aulas.apostila", varsApostila(app.perfil, plano, apNome, apMateria || undefined, apNotas)).then((p) => (promptApostila = p));
+  });
+
+  async function validarApostila(dados: ApostilaJson) {
+    okApostila = "";
+    previaAp = { p: await previaApostila(app.perfilId!, plano!, dados), apostila: dados.apostila };
+  }
+  async function salvarAulasApostila() {
+    if (!previaAp) return;
+    await salvarApostila(app.perfilId!, previaAp.p);
+    okApostila = `${previaAp.p.validas.length} aula(s) da apostila salvas na biblioteca. Se a IA respondeu em partes, peça "continue" e cole a próxima parte aqui.`;
+    previaAp = null;
   }
 
   // ---------- questões ----------
@@ -184,7 +252,7 @@
   </header>
 
   <div class="tabs" role="tablist">
-    {#each [["plano", "Plano de estudos"], ["aulas", "Aulas do YouTube"], ["questoes", "Questões"]] as [k, nome] (k)}
+    {#each [["plano", "Plano de estudos"], ["aulas", "Aulas"], ["questoes", "Questões"]] as [k, nome] (k)}
       <button class="tab" role="tab" aria-selected={aba === k} onclick={() => (aba = k as Aba)} disabled={k !== "plano" && !plano}>{nome}</button>
     {/each}
   </div>
@@ -297,6 +365,108 @@
         <div class="row">
           <button type="button" class="primary" disabled={salvando} onclick={salvarPlano}>{salvando ? "Salvando…" : "Salvar plano"}</button>
           <button type="button" onclick={() => (previa = null)}>Descartar</button>
+        </div>
+      </section>
+    {/if}
+  {:else if aba === "aulas" && plano}
+    <fieldset class="tipo">
+      <label><input type="radio" bind:group={aModo} value="youtube" /> <span><b>Vídeos do YouTube</b><small>A IA busca aulas gratuitas para os assuntos</small></span></label>
+      <label><input type="radio" bind:group={aModo} value="texto" /> <span><b>Aula em texto</b><small>Para assunto sem vídeo bom: a IA escreve a aula, com as fontes</small></span></label>
+      <label><input type="radio" bind:group={aModo} value="apostila" /> <span><b>Da minha apostila</b><small>Você anexa o PDF; a IA separa por assunto e gera as aulas</small></span></label>
+    </fieldset>
+  {/if}
+  {#if aba === "aulas" && plano && aModo === "apostila"}
+    <section class="card">
+      <h3>1. Monte o prompt</h3>
+      <div class="grid">
+        <label class="full">Apostila <input type="text" bind:value={apNome} maxlength="200" placeholder="Ex.: Apostila Direito Penal – Curso X, 2025" /></label>
+        <label>Assuntos de
+          <select bind:value={apMateria}>
+            <option value={0}>Todas as matérias</option>
+            {#each plano.materias as m (m.id)}<option value={m.id}>{m.nome}</option>{/each}
+          </select>
+        </label>
+      </div>
+      <div class="anexo">
+        <b>Anexe o PDF da apostila na conversa com a IA, junto com o prompt.</b>
+        <span>A IA lê a apostila inteira, encaixa cada trecho num assunto do seu plano e escreve uma aula por assunto com base nela. A apostila entra como primeira fonte de cada aula, com as páginas. Apostilas grandes vêm em partes de até 8 aulas: peça "continue" e cole cada parte.</span>
+      </div>
+      <label class="obs">
+        Observações para a IA (opcional)
+        <textarea rows="2" bind:value={apNotas} placeholder="Ex.: ignore os exercícios do fim de cada capítulo"></textarea>
+      </label>
+      <p class="tip">Se a apostila for de uma matéria só, escolha a matéria acima: o prompt fica menor e a IA erra menos o assunto.</p>
+      {#if promptApostila}<CopiarPrompt texto={promptApostila} />{/if}
+    </section>
+    <section class="card">
+      <h3>2. Cole a resposta da IA</h3>
+      <ColarJson schema={ApostilaSchema} onvalido={validarApostila} />
+      {#if okApostila}<p class="ok" role="status">{okApostila} <a href="/aulas">Ver na biblioteca</a></p>{/if}
+    </section>
+    {#if previaAp}
+      {@const p = previaAp.p}
+      <section class="card">
+        <h3>3. Confira</h3>
+        <ul class="resumo">
+          <li>{p.validas.length} aula(s) de "{previaAp.apostila}" prontas para salvar</li>
+          {#if p.repetidas}<li>{p.repetidas} já estavam salvas (ignoradas)</li>{/if}
+          {#if p.semAssunto.length}<li class="bad">{p.semAssunto.length} com id de assunto desconhecido (ignoradas): {p.semAssunto.slice(0, 4).join("; ")}</li>{/if}
+          {#if p.foraDoPlano.length}<li>Trechos sem assunto no plano: {p.foraDoPlano.slice(0, 6).join("; ")}{p.foraDoPlano.length > 6 ? "…" : ""}</li>{/if}
+        </ul>
+        {#if p.validas.length}
+          <details>
+            <summary>Ver em qual assunto cada aula entrou</summary>
+            <ul class="arvore">
+              {#each p.validas as v, i (i)}<li><b>{v.aula.titulo}</b> → {v.assunto}</li>{/each}
+            </ul>
+          </details>
+        {/if}
+        <div class="row">
+          <button type="button" class="primary" disabled={!p.validas.length} onclick={salvarAulasApostila}>Salvar aulas</button>
+          <button type="button" onclick={() => (previaAp = null)}>Descartar</button>
+        </div>
+      </section>
+    {/if}
+  {:else if aba === "aulas" && plano && aModo === "texto"}
+    <section class="card">
+      <h3>1. Monte o prompt</h3>
+      <div class="grid">
+        <label>Matéria
+          <select bind:value={tMateria}>
+            {#each plano.materias as m (m.id)}<option value={m.id}>{m.nome}</option>{/each}
+          </select>
+        </label>
+        <label>Assunto
+          <select bind:value={tAssunto}>
+            {#each plano.materia.get(tMateria)?.assuntos ?? [] as a (a.id)}<option value={a.id}>{a.nome}</option>{/each}
+          </select>
+        </label>
+      </div>
+      <label class="obs">
+        Observações para a IA (opcional)
+        <textarea rows="2" bind:value={tNotas} placeholder="Ex.: tenho dificuldade com prazos; quero mais exemplos"></textarea>
+      </label>
+      <p class="tip">O prompt leva seu perfil, as provas do plano e a prioridade do assunto. A aula volta com as fontes no final; uma IA com pesquisa na web ajuda a citar a legislação atual.</p>
+      {#if promptTexto}<CopiarPrompt texto={promptTexto} />{/if}
+    </section>
+    <section class="card">
+      <h3>2. Cole a resposta da IA</h3>
+      <ColarJson schema={AulaTextoSchema} onvalido={validarTexto} />
+      {#if okTexto}<p class="ok" role="status">Aula "{okTexto.titulo}" salva na biblioteca. <a href={`/aulas/texto?id=${okTexto.id}`}>Ler agora</a></p>{/if}
+    </section>
+    {#if previaT}
+      {@const t = previaT.dados}
+      <section class="card">
+        <h3>3. Confira</h3>
+        <ul class="resumo">
+          <li><b>{t.titulo}</b></li>
+          {#if previaT.p.ok}<li>Assunto: {previaT.p.assunto}</li>{:else}<li class="bad">{previaT.p.erro}</li>{/if}
+          <li>{t.secoes.length} seção(ões){t.pontosDeProva.length ? `, ${t.pontosDeProva.length} ponto(s) de prova` : ""}</li>
+          <li>Fontes: {t.fontes.slice(0, 3).map((f) => f.titulo).join("; ")}{t.fontes.length > 3 ? ` e mais ${t.fontes.length - 3}` : ""}</li>
+        </ul>
+        <div class="row">
+          <button type="button" class="primary" disabled={!previaT.p.ok} onclick={salvarAulaTexto}>Salvar na biblioteca</button>
+          <button type="button" onclick={() => (previaT = null)}>Descartar</button>
         </div>
       </section>
     {/if}

@@ -13,6 +13,7 @@
     { href: "/aulas", nome: "Aulas" },
     { href: "/questoes", nome: "Questões" },
     { href: "/progresso", nome: "Progresso" },
+    { href: "/acervo", nome: "Acervo" },
     { href: "/importar", nome: "Importar da IA" },
     { href: "/ajustes", nome: "Ajustes" },
   ];

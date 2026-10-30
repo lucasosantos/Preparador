@@ -1,3 +1,4 @@
+mod biblioteca;
 mod mcp;
 
 use tauri_plugin_sql::{Migration, MigrationKind};
@@ -22,6 +23,12 @@ fn migrations() -> Vec<Migration> {
             sql: include_str!("../migrations/0003_questoes_fonte.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 4,
+            description: "acervo",
+            sql: include_str!("../migrations/0004_acervo.sql"),
+            kind: MigrationKind::Up,
+        },
     ]
 }
 
@@ -41,7 +48,14 @@ pub fn run() {
         )
         .plugin(tauri_plugin_opener::init())
         .manage(mcp::Estado::default())
-        .invoke_handler(tauri::generate_handler![mcp::mcp_responder, mcp::mcp_status, mcp::mcp_configurar])
+        .invoke_handler(tauri::generate_handler![
+            mcp::mcp_responder,
+            mcp::mcp_status,
+            mcp::mcp_configurar,
+            biblioteca::biblioteca_ler,
+            biblioteca::biblioteca_gravar,
+            biblioteca::biblioteca_remover
+        ])
         .setup(|app| {
             mcp::iniciar(app.handle());
             Ok(())

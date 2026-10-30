@@ -2,8 +2,11 @@
   import { app } from "$lib/app.svelte";
   import { listarAulas, type Aula } from "$lib/aulas";
   import AulaItem from "$lib/components/AulaItem.svelte";
+  import TextoItem from "$lib/components/TextoItem.svelte";
+  import { listarTextos, type ItemBiblioteca } from "$lib/textos";
   import QuestaoCard from "$lib/components/QuestaoCard.svelte";
   import Stats from "$lib/components/Stats.svelte";
+  import { getConfig, setConfig } from "$lib/db";
   import { DIAS, addDays, dataCurta, diffDays, embaralhar, hoje, parse } from "$lib/datas";
   import { escolherQuestoes, listarQuestoes, type Questao } from "$lib/questoes";
   import {
@@ -27,6 +30,7 @@
   let sessoes = $state.raw<Sessao[]>([]);
   let revisoes = $state.raw<Revisao[]>([]);
   let aulas = $state.raw<Aula[]>([]);
+  let textos = $state.raw<ItemBiblioteca[]>([]);
   let questoes = $state.raw<Questao[]>([]);
   let extras = $state.raw<SessaoDb[]>([]);
   let feitos = $state.raw<Map<number, string>>(new Map());
@@ -42,17 +46,19 @@
     const p = plano;
     const pid = app.perfilId;
     if (!p || pid == null) return;
-    const [s, r, a, q, e, f] = await Promise.all([
+    const [s, r, a, q, e, f, t] = await Promise.all([
       sessoesDoDia(pid, p, cur, app.perfil?.horas_dia ?? 3),
       revisoesDoDia(pid, cur),
       listarAulas(pid, p.id),
       listarQuestoes(pid, p.id),
       extrasDoDia(pid, cur),
       conclusoes(pid),
+      listarTextos(pid, p),
     ]);
     sessoes = s;
     revisoes = r;
     aulas = a;
+    textos = t;
     questoes = q;
     extras = e;
     feitos = f;
@@ -65,6 +71,18 @@
     void app.perfil?.horas_dia;
     carregar();
   });
+
+  // aulas e questões recolhidas valem para todas as sessões e ficam salvas
+  type Bloco = "aulas" | "questoes";
+  let recolhido = $state<Record<Bloco, boolean>>({ aulas: false, questoes: false });
+  getConfig("hoje_recolhido").then((v) => {
+    if (v) recolhido = { ...recolhido, ...JSON.parse(v) };
+  });
+  function alternarBloco(b: Bloco, aberto: boolean) {
+    if (recolhido[b] === !aberto) return;
+    recolhido[b] = !aberto;
+    setConfig("hoje_recolhido", JSON.stringify(recolhido));
+  }
 
   async function depois() {
     await carregar();
@@ -196,6 +214,8 @@
       {@const m = plano.materia.get(s.materiaId)}
       {@const fim = !!(s.assunto && feitos.has(s.assunto.id))}
       {@const al = aulasDe(s)}
+      {@const tx = textos.filter((t) => t.assuntoId === s.assunto?.id)}
+      {@const vistas = al.filter((a) => a.assistida_em).length + tx.filter((t) => t.lidaEm).length}
       {@const qs = escolherQuestoes(questoes.filter((q) => q.materia_id === s.materiaId), cur, 3, `${cur}-${s.slot}`, s.assunto?.id ?? null)}
       <section class="card" class:done={s.registro?.estudou}>
         <div class="card-head">
@@ -208,13 +228,24 @@
           {#if plano.objetivo.tipo === "constancia" && s.assunto}<span class="small muted">Cobrado em {s.assunto.nProvas} de {plano.provas.length} provas</span>{/if}
         </div>
 
-        <div class="aulas">
-          <div class="aulas-head">
+        <details class="bloco" open={!recolhido.aulas} ontoggle={(e) => alternarBloco("aulas", e.currentTarget.open)}>
+          <summary>
+            <span class="chev" aria-hidden="true"></span>
             <h3>Aulas</h3>
-            <a class="btn small" href={`/aulas?materia=${s.materiaId}&assunto=${s.assunto?.id ?? ""}`}>{al.length ? "Adicionar outra" : "Cadastrar aula"}</a>
+            {#if al.length + tx.length}<span class="chip" class:ok={vistas === al.length + tx.length}>{vistas}/{al.length + tx.length}</span>{/if}
+          </summary>
+          <div class="conteudo">
+            <div class="row">
+              {#if s.assunto && !tx.length}
+                <a class="btn small" href={`/importar?aba=aulas&modo=texto&materia=${s.materiaId}&assunto=${s.assunto.id}`}>Gerar aula em texto</a>
+              {/if}
+              <a class="btn small" href={`/aulas?materia=${s.materiaId}&assunto=${s.assunto?.id ?? ""}`}>{al.length ? "Adicionar outra" : "Cadastrar aula"}</a>
+            </div>
+            {#each al as a (a.id)}<AulaItem {a} meta={false} onmudou={carregar} />{/each}
+            {#each tx as t (t.id)}<TextoItem {t} meta={false} onmudou={carregar} />{/each}
+            {#if !al.length && !tx.length}<p class="empty small">Nenhuma aula para este assunto. Sem vídeo bom, gere uma aula em texto.</p>{/if}
           </div>
-          {#each al as a (a.id)}<AulaItem {a} meta={false} onmudou={carregar} />{:else}<p class="empty small">Nenhuma aula para este assunto.</p>{/each}
-        </div>
+        </details>
 
         <div class="controls">
           <label><input type="checkbox" checked={!!s.registro?.estudou} onchange={(e) => marcarEstudo(s, e.currentTarget.checked)} /> Estudei</label>
@@ -222,13 +253,19 @@
           <label><input type="checkbox" checked={fim} disabled={!s.assunto} onchange={(e) => terminar(s, e.currentTarget.checked)} /> Terminei este assunto</label>
         </div>
 
-        <div class="qs">
-          <div class="qs-head">
+        <details class="bloco" open={!recolhido.questoes} ontoggle={(e) => alternarBloco("questoes", e.currentTarget.open)}>
+          <summary>
+            <span class="chev" aria-hidden="true"></span>
             <h3>Questões da sessão</h3>
-            <a class="btn small" href={`/importar?aba=questoes&materia=${s.materiaId}&assunto=${s.assunto?.id ?? ""}`}>Gerar mais com IA</a>
+            {#if qs.length}<span class="chip">{qs.length}</span>{/if}
+          </summary>
+          <div class="conteudo">
+            <div class="row">
+              <a class="btn small" href={`/importar?aba=questoes&materia=${s.materiaId}&assunto=${s.assunto?.id ?? ""}`}>Gerar mais com IA</a>
+            </div>
+            {#each qs as q (q.id)}<QuestaoCard {q} data={cur} onrespondida={carregar} />{:else}<p class="empty small">Sem questões para esta matéria ainda.</p>{/each}
           </div>
-          {#each qs as q (q.id)}<QuestaoCard {q} data={cur} onrespondida={carregar} />{:else}<p class="empty small">Sem questões para esta matéria ainda.</p>{/each}
-        </div>
+        </details>
       </section>
     {/each}
 
@@ -274,8 +311,13 @@
   .controls { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; padding-top: 10px; border-top: 1px solid var(--line); }
   .controls label { display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 15px; }
   .controls input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
-  .aulas, .qs { display: flex; flex-direction: column; gap: 8px; }
-  .aulas-head, .qs-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .bloco summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+  .bloco summary::-webkit-details-marker { display: none; }
+  .bloco summary h3 { margin: 0; }
+  .bloco summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .chev { width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .2s; flex: none; }
+  .bloco[open] .chev { transform: rotate(45deg); }
+  .conteudo { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
   .review-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   .review-list label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
   .review-list input { margin-top: 4px; width: 17px; height: 17px; accent-color: var(--gold); flex: none; }

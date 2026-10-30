@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { importarAulas, listarAulas, previaAulas } from "./aulas";
 import { execute, insertMany, select } from "./db";
-import { AulasSchema, PlanoSchema, QuestoesSchema, type PlanoJson } from "./esquemas";
+import { AulaTextoSchema, AulasSchema, PlanoSchema, QuestoesSchema, type PlanoJson } from "./esquemas";
 import { criarPerfil } from "./perfis";
 import { carregarPlano, importarPlano, salvarRevisoes, type Plano } from "./planos";
 import { importarQuestoes, listarQuestoes, previaQuestoes } from "./questoes";
+import { lerTexto, listarTextos, salvarTexto } from "./textos";
 import demo from "./demo/pcse.json";
 
 const DIA = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"] as const;
@@ -54,6 +55,7 @@ const BackupSchema = z.object({
     minutos: z.number(), estudou: z.number() })),
   conclusoes: z.array(z.object({ assunto: z.string(), data: z.string() })),
   revisoesAgendadas: z.array(z.object({ assunto: z.string(), intervalo: z.number(), data_prevista: z.string(), feita_em: z.string().nullable() })),
+  textos: z.array(z.object({ criadaEm: z.string(), lidaEm: z.string().nullable(), aula: z.unknown() })).default([]),
 });
 
 export async function exportarPerfil(perfilId: number): Promise<string> {
@@ -74,6 +76,7 @@ export async function exportarPerfil(perfilId: number): Promise<string> {
     sessoes: [],
     conclusoes: [],
     revisoesAgendadas: [],
+    textos: [],
   };
   if (plano) {
     const provaIdx = new Map(plano.provas.map((p, i) => [p.id, i]));
@@ -111,6 +114,11 @@ export async function exportarPerfil(perfilId: number): Promise<string> {
         [perfilId],
       )
     ).map((r) => ({ assunto: as(r.assunto_id)!, intervalo: r.intervalo, data_prevista: r.data_prevista, feita_em: r.feita_em }));
+    for (const t of await listarTextos(perfilId, plano)) {
+      const r = await lerTexto(t.id);
+      // o slug do assunto pode ter mudado desde que a aula foi gerada
+      if (r) out.textos.push({ criadaEm: t.criadaEm, lidaEm: t.lidaEm, aula: { ...r.aula, materiaId: ms(t.materiaId), assuntoId: as(t.assuntoId) } });
+    }
   }
   return JSON.stringify(out);
 }
@@ -160,6 +168,12 @@ export async function importarBackup(texto: string): Promise<number> {
   if (rev.length)
     await insertMany("revisoes", ["perfil_id", "assunto_id", "intervalo", "data_prevista", "feita_em"],
       rev.map((r) => [perfilId, aid.get(r.assunto), r.intervalo, r.data_prevista, r.feita_em]));
+  for (const t of b.textos) {
+    const r = AulaTextoSchema.safeParse(t.aula);
+    const assuntoId = r.success ? aid.get(r.data.assuntoId) : undefined;
+    if (r.success && assuntoId)
+      await salvarTexto(perfilId, { materiaId: plano.assunto.get(assuntoId)!.materia_id, assuntoId }, r.data, { criadaEm: t.criadaEm, lidaEm: t.lidaEm });
+  }
   return perfilId;
 }
 

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tauri-apps/plugin-sql", () => import("./test/sqlite-mock"));
 vi.mock("@tauri-apps/plugin-http", () => ({ fetch: vi.fn() }));
+vi.mock("@tauri-apps/api/core", () => import("./test/arquivos-mock"));
 
 import { novoBanco } from "./test/sqlite-mock";
 import { criarPerfilDemo, planoParaJson } from "./backup";

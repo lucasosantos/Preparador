@@ -1,8 +1,9 @@
 // Ferramentas e prompts do servidor MCP. O lado Rust (src-tauri/src/mcp.rs) só
 // transporta: cada chamada chega aqui como evento e volta por `mcp_responder`.
+import { reaproveitar, resumoAcervo, sugestoesAcervo, type Sugestao } from "./acervo";
 import { importarAulas, listarAulas, previaAulas } from "./aulas";
 import { hoje, DIAS } from "./datas";
-import { AulasSchema, PlanoSchema, QuestoesSchema, validar } from "./esquemas";
+import { ApostilaSchema, AulaTextoSchema, AulasSchema, PlanoSchema, QuestoesSchema, validar } from "./esquemas";
 import { IDIOMAS, criarPerfil, listarPerfis, type Perfil } from "./perfis";
 import { carregarPlano, importarPlano, listaAssuntosPrompt, planoAtualPrompt, previaPlano, resolverRef, type Plano } from "./planos";
 import { PROMPTS, leituraPdfsConstancia, listaProvasAlvo, montarPrompt, type ChavePrompt } from "./prompts";
@@ -20,6 +21,17 @@ import {
   revisoesDoDia,
   sessoesDoDia,
 } from "./rotina";
+import {
+  lerTexto,
+  listarTextos,
+  marcarLida,
+  previaApostila,
+  previaTexto,
+  salvarApostila,
+  salvarTexto,
+  varsApostila,
+  varsAulaTexto,
+} from "./textos";
 import { planoParaPrompt } from "./unir";
 
 /** O que o despachante precisa saber do app (o perfil ativo) e como avisá-lo de mudanças. */
@@ -73,6 +85,20 @@ function jsonArg<T>(a: Args, k: string, schema: Parameters<typeof validar<T>>[0]
   const r = validar(schema, typeof v === "string" ? v : JSON.stringify(v));
   if (!r.ok) falha(`O JSON não passou na validação:\n${r.erros.map((e) => `- ${e}`).join("\n")}`);
   return r as { ok: true; dados: T; bruto: string };
+}
+
+function resumoSugestao(s: Sugestao, indice: number) {
+  return {
+    indice,
+    destino: s.destino,
+    origem: `${s.origem.materia}${s.origem.assunto ? `: ${s.origem.assunto}` : " (matéria inteira)"}`,
+    planoDeOrigem: s.origem.objetivo,
+    semelhanca: s.score,
+    forte: s.forte,
+    videos: s.aulas.map((x) => x.titulo),
+    aulasTexto: s.textos.map((x) => x.titulo),
+    questoes: s.questoes.length,
+  };
 }
 
 const perfilProp = {
@@ -196,7 +222,14 @@ const FERRAMENTAS: Ferramenta[] = [
         };
       await importarPlano(p.id, dados, bruto);
       await ctx.aoMudar(p.id);
-      return { confirmado: true, mensagem: `Plano salvo no perfil "${p.nome}".` };
+      const doAcervo = await sugestoesAcervo(p.id, await planoDe(p));
+      return {
+        confirmado: true,
+        mensagem: `Plano salvo no perfil "${p.nome}".`,
+        acervo: doAcervo.length
+          ? `O acervo tem conteúdo de planos anteriores para ${doAcervo.length} tema(s) deste plano. Use buscar_no_acervo para mostrar ao usuário e reaproveitar_do_acervo para copiar.`
+          : null,
+      };
     },
   },
   {
@@ -213,6 +246,140 @@ const FERRAMENTAS: Ferramenta[] = [
       await importarAulas(p.id, previa, bruto);
       await ctx.aoMudar(p.id);
       return { adicionadas: previa.validas.length, repetidas: previa.duplicadas, idsDesconhecidos: previa.semAssunto, naoYoutube: previa.naoYoutube };
+    },
+  },
+  {
+    name: "salvar_aula_texto",
+    title: "Salvar aula em texto",
+    description:
+      'Salva na biblioteca uma aula em texto no formato "preparador.aulaTexto/1", ligada a um assunto do plano. Use para assuntos sem videoaula boa. Exige ao menos uma fonte em "fontes".',
+    inputSchema: obj({ aula: { type: ["object", "string"], description: 'JSON no formato "preparador.aulaTexto/1".' } }, ["aula"]),
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const plano = await planoDe(p);
+      const { dados } = jsonArg(a, "aula", AulaTextoSchema);
+      const r = previaTexto(plano, dados);
+      if (!r.ok) return falha(`${r.erro} Veja os ids em ver_plano.`);
+      const id = await salvarTexto(p.id, { materiaId: r.materiaId, assuntoId: r.assuntoId }, dados);
+      await ctx.aoMudar(p.id);
+      return { id, titulo: dados.titulo, assunto: r.assunto };
+    },
+  },
+  {
+    name: "importar_apostila",
+    title: "Importar aulas de apostila",
+    description:
+      'Salva na biblioteca as aulas em texto tiradas de uma apostila em PDF, no formato "preparador.apostila/1": uma aula por assunto do plano, com a apostila como primeira fonte. Ignora ids desconhecidos e aulas já salvas da mesma apostila.',
+    inputSchema: obj({ apostila: { type: ["object", "string"], description: 'JSON no formato "preparador.apostila/1".' } }, ["apostila"]),
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const plano = await planoDe(p);
+      const { dados } = jsonArg(a, "apostila", ApostilaSchema);
+      const previa = await previaApostila(p.id, plano, dados);
+      await salvarApostila(p.id, previa);
+      await ctx.aoMudar(p.id);
+      return {
+        salvas: previa.validas.map((v) => ({ titulo: v.aula.titulo, assunto: v.assunto })),
+        repetidas: previa.repetidas,
+        idsDesconhecidos: previa.semAssunto,
+        foraDoPlano: previa.foraDoPlano,
+      };
+    },
+  },
+  {
+    name: "listar_aulas_texto",
+    title: "Listar aulas em texto",
+    description:
+      "Lista as aulas em texto da biblioteca (geradas pela IA ou tiradas de apostilas), com id, assunto, apostila de origem e se já foram lidas. Use ler_aula_texto para abrir o conteúdo.",
+    inputSchema: obj({ materia: { type: "string", description: "Id da matéria" }, assunto: { type: "string", description: "Id do assunto" } }),
+    annotations: { readOnlyHint: true },
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const plano = await planoDe(p);
+      const r = texto(a, "materia") || texto(a, "assunto") ? refOuFalha(plano, texto(a, "materia"), texto(a, "assunto")) : null;
+      return (await listarTextos(p.id, plano))
+        .filter((t) => !r || (r.assuntoId ? t.assuntoId === r.assuntoId : t.materiaId === r.materiaId))
+        .map((t) => ({
+          id: t.id,
+          titulo: t.titulo,
+          materia: plano.materia.get(t.materiaId)!.slug,
+          assunto: plano.assunto.get(t.assuntoId)!.slug,
+          assuntoNome: plano.assunto.get(t.assuntoId)!.nome,
+          apostila: t.apostila ?? null,
+          criadaEm: t.criadaEm,
+          lidaEm: t.lidaEm,
+        }));
+    },
+  },
+  {
+    name: "ler_aula_texto",
+    title: "Ler aula em texto",
+    description: "Devolve o conteúdo completo de uma aula em texto da biblioteca: resumo, seções, pontos de prova e fontes.",
+    inputSchema: obj({ id: { type: "string", description: "Id da aula (de listar_aulas_texto ou plano_do_dia)" } }, ["id"]),
+    annotations: { readOnlyHint: true },
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const r = await lerTexto(texto(a, "id") ?? falha("Informe o id."));
+      if (!r || r.item.perfilId !== p.id) return falha(`Aula "${texto(a, "id")}" não encontrada no perfil "${p.nome}". Veja os ids em listar_aulas_texto.`);
+      const { schema: _s, ...aula } = r.aula;
+      return { id: r.item.id, criadaEm: r.item.criadaEm, lidaEm: r.item.lidaEm, ...aula };
+    },
+  },
+  {
+    name: "marcar_aula_texto_lida",
+    title: "Marcar aula em texto como lida",
+    description: "Marca (ou desmarca, com lida=false) uma aula em texto como lida.",
+    inputSchema: obj(
+      { id: { type: "string" }, lida: { type: "boolean", default: true }, data: { type: "string", description: "AAAA-MM-DD; padrão: hoje." } },
+      ["id"],
+    ),
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const id = texto(a, "id") ?? falha("Informe o id.");
+      const r = await lerTexto(id);
+      if (!r || r.item.perfilId !== p.id) return falha(`Aula "${id}" não encontrada no perfil "${p.nome}".`);
+      const lidaEm = a.lida === false ? null : dataArg(a);
+      await marcarLida(id, lidaEm);
+      await ctx.aoMudar(p.id);
+      return { id, titulo: r.item.titulo, lidaEm };
+    },
+  },
+  {
+    name: "buscar_no_acervo",
+    title: "Buscar no acervo",
+    description:
+      'Procura no acervo (aulas, questões e aulas em texto de todos os planos que já passaram pelo app, inclusive de perfis excluídos) o que serve para o plano do perfil e ainda não está nele. Cada sugestão liga um tema antigo a um assunto do plano, com a semelhança de 0 a 1; "forte" = muito parecido. Devolve o índice de cada sugestão para usar em reaproveitar_do_acervo.',
+    inputSchema: obj({}),
+    annotations: { readOnlyHint: true },
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const plano = await planoDe(p);
+      const sug = await sugestoesAcervo(p.id, plano);
+      return {
+        acervo: await resumoAcervo(),
+        sugestoes: sug.map((s, indice) => resumoSugestao(s, indice)),
+      };
+    },
+  },
+  {
+    name: "reaproveitar_do_acervo",
+    title: "Reaproveitar do acervo",
+    description:
+      'Copia para o plano do perfil o conteúdo do acervo sugerido por buscar_no_acervo. Sem "indices", copia só as sugestões fortes. Mostre as sugestões fracas ao usuário antes de incluí-las.',
+    inputSchema: obj({
+      indices: { type: "array", items: { type: "integer" }, description: "Índices das sugestões de buscar_no_acervo" },
+    }),
+    run: async (a, ctx) => {
+      const p = await perfilDe(a, ctx);
+      const plano = await planoDe(p);
+      const sug = await sugestoesAcervo(p.id, plano);
+      const indices = Array.isArray(a.indices) ? (a.indices as unknown[]).map(Number) : null;
+      const fora = indices?.filter((i) => !sug[i]) ?? [];
+      if (fora.length) falha(`Índices inexistentes: ${fora.join(", ")}. Chame buscar_no_acervo de novo; a lista muda depois de cada cópia.`);
+      const escolhidas = indices ? indices.map((i) => sug[i]) : sug.filter((s) => s.forte);
+      const r = await reaproveitar(p.id, escolhidas);
+      await ctx.aoMudar(p.id);
+      return { copiado: r, temas: escolhidas.map((s) => s.destino) };
     },
   },
   {
@@ -234,19 +401,21 @@ const FERRAMENTAS: Ferramenta[] = [
   {
     name: "plano_do_dia",
     title: "Plano do dia",
-    description: "Sessões de estudo do dia (matéria, assunto, minutos planejados, se já estudou), revisões programadas e aulas de cada sessão.",
+    description:
+      "Sessões de estudo do dia (matéria, assunto, minutos planejados, se já estudou), revisões programadas e aulas de cada sessão: vídeos e aulas em texto (abra com ler_aula_texto).",
     inputSchema: obj({ data: { type: "string", description: "AAAA-MM-DD; padrão: hoje." } }),
     annotations: { readOnlyHint: true },
     run: async (a, ctx) => {
       const p = await perfilDe(a, ctx);
       const plano = await planoDe(p);
       const data = dataArg(a);
-      const [sess, revs, aulas, extras, feitos] = await Promise.all([
+      const [sess, revs, aulas, extras, feitos, textos] = await Promise.all([
         sessoesDoDia(p.id, plano, data, p.horas_dia),
         revisoesDoDia(p.id, data),
         listarAulas(p.id, plano.id),
         extrasDoDia(p.id, data),
         conclusoes(p.id),
+        listarTextos(p.id, plano),
       ]);
       const slug = (id: number | null) => (id == null ? null : (plano.assunto.get(id)?.slug ?? null));
       return {
@@ -264,6 +433,9 @@ const FERRAMENTAS: Ferramenta[] = [
           aulas: aulas
             .filter((x) => x.materia_id === s.materiaId && (x.assunto_id == null || x.assunto_id === s.assunto?.id))
             .map((x) => ({ titulo: x.titulo, url: x.url, assistida: !!x.assistida_em, linkQuebrado: x.status_link === "quebrado" })),
+          aulasTexto: textos
+            .filter((t) => t.assuntoId === s.assunto?.id)
+            .map((t) => ({ id: t.id, titulo: t.titulo, apostila: t.apostila ?? null, lida: !!t.lidaEm })),
         })),
         diaDeSimulado: sess.length === 0,
         revisoes: revs.map((r) => ({
@@ -411,19 +583,26 @@ const FERRAMENTAS: Ferramenta[] = [
   {
     name: "assuntos_sem_aula",
     title: "Assuntos sem aula",
-    description: "Lista os assuntos que ainda não têm aula cadastrada, com ids, para buscar aulas no YouTube e depois usar importar_aulas.",
+    description:
+      'Lista os assuntos que ainda não têm videoaula cadastrada, com ids, para buscar aulas no YouTube e depois usar importar_aulas. "temAulaTexto" indica os que já têm aula em texto na biblioteca; para os demais sem vídeo bom, use o prompt aulas.texto.',
     inputSchema: obj({ materia: { type: "string" } }),
     annotations: { readOnlyHint: true },
     run: async (a, ctx) => {
       const p = await perfilDe(a, ctx);
       const plano = await planoDe(p);
       const com = new Set((await listarAulas(p.id, plano.id)).map((x) => x.assunto_id));
+      const comTexto = new Set((await listarTextos(p.id, plano)).map((t) => t.assuntoId));
       const m = texto(a, "materia") ? refOuFalha(plano, texto(a, "materia")) : null;
       return {
         idioma: idioma(p),
         assuntos: [...plano.assunto.values()]
           .filter((x) => !com.has(x.id) && (!m || x.materia_id === m.materiaId))
-          .map((x) => ({ materia: plano.materia.get(x.materia_id)!.slug, assunto: x.slug, nome: `${plano.materia.get(x.materia_id)!.nome}: ${x.nome}` })),
+          .map((x) => ({
+            materia: plano.materia.get(x.materia_id)!.slug,
+            assunto: x.slug,
+            nome: `${plano.materia.get(x.materia_id)!.nome}: ${x.nome}`,
+            temAulaTexto: comTexto.has(x.id),
+          })),
       };
     },
   },
@@ -481,6 +660,15 @@ const ARGS_PROMPT: Partial<Record<ChavePrompt, ArgPrompt[]>> = {
     { name: "materia", description: "Id da matéria (vazio = todas sem aula)" },
     { name: "porAssunto", description: "Aulas por assunto (1 a 3)" },
   ],
+  "aulas.texto": [
+    { name: "assunto", description: "Id do assunto da aula", required: true },
+    { name: "observacoes", description: "Observações para a IA" },
+  ],
+  "aulas.apostila": [
+    { name: "apostila", description: "Nome da apostila do PDF anexado", required: true },
+    { name: "materia", description: "Id da matéria (vazio = todas)" },
+    { name: "observacoes", description: "Observações para a IA" },
+  ],
   "questoes.gerar": [
     { name: "materia", description: "Id da matéria" },
     { name: "assunto", description: "Id do assunto" },
@@ -500,6 +688,8 @@ const MODO_AGENTE: Partial<Record<ChavePrompt, string>> = {
   "plano.preedital": "importar_plano (primeiro com confirmar=false; mostre a prévia e só confirme com a minha aprovação)",
   "plano.constancia": "importar_plano (primeiro com confirmar=false; mostre a prévia e só confirme com a minha aprovação)",
   "aulas.youtube": "importar_aulas",
+  "aulas.texto": "salvar_aula_texto",
+  "aulas.apostila": "importar_apostila (uma chamada por parte de até 8 aulas)",
   "questoes.gerar": "importar_questoes",
   "questoes.extrair": "importar_questoes (uma chamada por parte de até 40 questões)",
 };
@@ -567,6 +757,18 @@ async function promptMcp(chave: ChavePrompt, a: Args, ctx: ContextoMcp): Promise
         porAssunto: Math.min(3, Math.max(1, Number(texto(a, "porAssunto") ?? 2) || 2)),
         assuntos: listaAssuntosPrompt(pl, { materiaId: m?.materiaId, assuntoIds: [...pl.assunto.keys()].filter((id) => !com.has(id)) }),
       };
+      break;
+    }
+    case "aulas.texto": {
+      const pl = plano ?? falha("O perfil ainda não tem plano.");
+      const r = refOuFalha(pl, undefined, texto(a, "assunto") ?? falha("Informe o assunto."));
+      vars = varsAulaTexto(p!, pl, r.assuntoId ?? falha("Informe o id de um assunto, não de uma matéria."), texto(a, "observacoes"));
+      break;
+    }
+    case "aulas.apostila": {
+      const pl = plano ?? falha("O perfil ainda não tem plano.");
+      const r = texto(a, "materia") ? refOuFalha(pl, texto(a, "materia")) : null;
+      vars = varsApostila(p!, pl, texto(a, "apostila") ?? falha("Informe o nome da apostila."), r?.materiaId, texto(a, "observacoes"));
       break;
     }
     case "aulas.substituto":

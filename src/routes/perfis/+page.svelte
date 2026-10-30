@@ -3,6 +3,7 @@
   import { app } from "$lib/app.svelte";
   import { criarPerfilDemo } from "$lib/backup";
   import { IDIOMAS, atualizarPerfil, criarPerfil, excluirPerfil, type Perfil } from "$lib/perfis";
+  import { desvincularTextosDoPerfil } from "$lib/textos";
 
   type Rascunho = { id: number | null; nome: string; idioma: string; horas: number };
   const NOVO = (): Rascunho => ({ id: null, nome: "", idioma: "pt-BR", horas: 3 });
@@ -53,6 +54,7 @@
       return;
     }
     excluirArmado = null;
+    await desvincularTextosDoPerfil(id);
     await excluirPerfil(id);
     if (rascunho.id === id) rascunho = NOVO();
     await app.recarregarPerfis();

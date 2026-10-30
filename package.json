@@ -1,6 +1,6 @@
 {
   "name": "preparador",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Organizador de estudos para concursos, ENEM, vestibulares e processos seletivos",
   "type": "module",
   "scripts": {

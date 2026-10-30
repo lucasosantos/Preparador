@@ -35,6 +35,8 @@ Links do YouTube são verificados via oEmbed (`https://www.youtube.com/oembed?ur
 ## Contratos JSON
 - `preparador.plano/1`: `{ schema, objetivo{tipo,nome,provas[{id,nome,banca,dataProva}]}, materias[{id,nome,peso,assuntos[{id,nome,detalhe,prioridade,provas?}]}], semana{seg..dom}?, observacoes }` (semana ausente → gerada pelo peso)
 - `preparador.aulas/1`: `{ schema, idioma, aulas[{materiaId?, assuntoId?|null, titulo, url, canal, duracaoMin}] }` (assuntoId é único no plano; materiaId sozinho = matéria inteira)
+- `preparador.aulaTexto/1`: `{ schema, materiaId?, assuntoId, titulo, idioma?, resumo, secoes[{titulo, texto}], pontosDeProva[], fontes[{titulo, url?}] (mín. 1) }`
+- `preparador.apostila/1`: `{ schema, apostila, aulas[campos da aulaTexto sem "schema"], foraDoPlano[] }` (cada aula vira um arquivo da biblioteca)
 - `preparador.questoes/1`: `{ schema, questoes[{assuntoId, tipo:"CE"|"ME", enunciado, alternativas?, gabarito, explicacao}] }`
 
 ## Fases
@@ -51,6 +53,30 @@ Fases 0–5 implementadas. Pendentes: instaladores (`npm run tauri build`) e íc
 - Lógica em `src/lib/` (planos, rotina, aulas, questoes, prompts, esquemas, backup); telas em `src/routes/`.
 - `npm test` roda a lógica contra `node:sqlite` com a mesma migração (`src/lib/logica.test.ts`).
 - Perfil-demo: `src/lib/demo/pcse.json`, gerado a partir do artifact; criado na 1ª execução ou pelo botão em Perfis.
+
+## Aulas em texto
+Para assuntos sem vídeo bom, o prompt `aulas.texto` pede à IA uma aula escrita para o perfil (nome, horas/dia, idioma)
+e o plano (provas, banca, prioridade e posição do assunto), sempre com fontes no fim.
+Ficam fora do SQLite, na pasta `biblioteca/` dos dados do app: `biblioteca.json` (índice: perfil, matéria, assunto,
+título, criada/lida em) e um `aula-<id>.json` por aula. Lidos e gravados por comandos Rust (`src-tauri/src/biblioteca.rs`),
+que só aceitam nomes simples dentro dessa pasta. Lógica em `src/lib/textos.ts`; leitura em `/aulas/texto?id=`.
+Apostilas: o prompt `aulas.apostila` vai com o PDF anexado; a IA encaixa cada trecho num assunto do plano e escreve
+uma aula por assunto com base na apostila (ela é sempre a 1ª fonte, com páginas), em partes de até 8 aulas.
+Reimportar a mesma apostila ignora aulas com mesmo assunto e título.
+Entram no backup do perfil; ao excluir o perfil, ficam no acervo. MCP: `salvar_aula_texto`, `importar_apostila`, `listar_aulas_texto`, `ler_aula_texto` e `marcar_aula_texto_lida`;
+`plano_do_dia` traz as aulas em texto de cada sessão e `assuntos_sem_aula` indica `temAulaTexto`.
+
+## Acervo
+Tudo o que passa pelo app fica guardado para concursos futuros, mesmo após trocar de plano ou excluir o perfil.
+- Migração `0004_acervo.sql`: `acervo_temas` (matéria + assunto por nome, com objetivo e banca de origem; assunto '' = matéria
+  inteira), `acervo_aulas` e `acervo_questoes`. Gatilhos copiam cada matéria, assunto, aula e questão inseridos (qualquer
+  caminho: tela, MCP, backup, demo) e propagam a verificação de links; a migração copia o que já existia.
+- Aulas em texto: o índice guarda o tema pelo nome; excluir o perfil só desvincula (`perfilId: null`).
+- `src/lib/acervo.ts`: compara cada tema do acervo com os assuntos do plano (nomes sem acento e palavras vazias, radical simples,
+  peso pela raridade da palavra, nome contido no outro) e sugere o conteúdo que ainda não está no perfil. ≥ 0,8 = forte
+  (vem marcado), 0,55–0,8 = fraco (o usuário confere). Cada tema vai só para o assunto mais parecido.
+- Tela `/acervo`; ao salvar um plano com sugestões, o app abre essa tela. MCP: `buscar_no_acervo` e `reaproveitar_do_acervo`;
+  `importar_plano` avisa quando há sugestões.
 
 ## Servidor MCP
 - Rust (`src-tauri/src/mcp.rs`): HTTP em `127.0.0.1:47321/mcp` com token (`~/.config/com.preparador.app/mcp.json`), rejeita `Origin` de navegador. Repassa `tools/*` e `prompts/*` ao webview (evento `mcp-chamada` → comando `mcp_responder`). O app precisa estar aberto.
