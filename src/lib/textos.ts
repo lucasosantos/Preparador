@@ -128,6 +128,28 @@ export async function salvarTexto(
   return id;
 }
 
+/** Grava uma aula só no acervo (sem perfil), vinculada pelo nome do tema. Ids 0 não casam com nenhum assunto. */
+export async function salvarTextoAcervo(tema: TemaTexto, aula: AulaTextoJson, extra?: { criadaEm?: string; lidaEm?: string | null }) {
+  const id = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+  const arquivo = `aula-${id}.json`;
+  await gravar(arquivo, JSON.stringify(aula, null, 1));
+  await mudarIndice((i) => {
+    i.aulas.push({
+      id,
+      arquivo,
+      perfilId: null,
+      materiaId: 0,
+      assuntoId: 0,
+      titulo: aula.titulo,
+      apostila: aula.apostila ?? null,
+      tema,
+      criadaEm: extra?.criadaEm ?? new Date().toISOString().slice(0, 10),
+      lidaEm: extra?.lidaEm ?? null,
+    });
+  });
+  return id;
+}
+
 export type PreviaApostila = {
   validas: { ref: { materiaId: number; assuntoId: number }; assunto: string; aula: AulaTextoJson }[];
   semAssunto: string[];

@@ -1,11 +1,13 @@
+import { invoke } from "@tauri-apps/api/core";
 import { z } from "zod";
 import { importarAulas, listarAulas, previaAulas } from "./aulas";
-import { execute, insertMany, select } from "./db";
+import { execute, first, getConfig, insertMany, select, setConfig } from "./db";
 import { AulaTextoSchema, AulasSchema, PlanoSchema, QuestoesSchema, type PlanoJson } from "./esquemas";
-import { criarPerfil } from "./perfis";
+import { criarPerfil, listarPerfis } from "./perfis";
 import { carregarPlano, importarPlano, salvarRevisoes, type Plano } from "./planos";
+import { PROMPTS, salvarTemplate, type ChavePrompt } from "./prompts";
 import { importarQuestoes, listarQuestoes, previaQuestoes } from "./questoes";
-import { lerTexto, listarTextos, salvarTexto } from "./textos";
+import { completarTemas, lerTexto, listarTextos, salvarTexto, salvarTextoAcervo, todosTextos } from "./textos";
 import demo from "./demo/pcse.json";
 
 const DIA = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"] as const;
@@ -58,7 +60,13 @@ const BackupSchema = z.object({
   textos: z.array(z.object({ criadaEm: z.string(), lidaEm: z.string().nullable(), aula: z.unknown() })).default([]),
 });
 
+type Backup = z.infer<typeof BackupSchema>;
+
 export async function exportarPerfil(perfilId: number): Promise<string> {
+  return JSON.stringify(await dadosPerfil(perfilId));
+}
+
+async function dadosPerfil(perfilId: number): Promise<Backup> {
   const [perfil] = await select<{ nome: string; idioma: string; horas_dia: number }>(
     "SELECT nome, idioma, horas_dia FROM perfis WHERE id = $1",
     [perfilId],
@@ -66,7 +74,7 @@ export async function exportarPerfil(perfilId: number): Promise<string> {
   const plano = await carregarPlano(perfilId);
   const ms = (id: number) => plano!.materia.get(id)?.slug ?? "";
   const as = (id: number | null) => (id == null ? null : (plano!.assunto.get(id)?.slug ?? null));
-  const out: z.infer<typeof BackupSchema> = {
+  const out: Backup = {
     schema: "preparador.backup/1",
     perfil,
     plano: plano ? planoParaJson(plano) : null,
@@ -120,12 +128,15 @@ export async function exportarPerfil(perfilId: number): Promise<string> {
       if (r) out.textos.push({ criadaEm: t.criadaEm, lidaEm: t.lidaEm, aula: { ...r.aula, materiaId: ms(t.materiaId), assuntoId: as(t.assuntoId) } });
     }
   }
-  return JSON.stringify(out);
+  return out;
 }
 
 /** Cria um perfil novo a partir de um backup. Devolve o id do perfil. */
 export async function importarBackup(texto: string): Promise<number> {
-  const b = BackupSchema.parse(JSON.parse(texto));
+  return restaurarPerfil(BackupSchema.parse(JSON.parse(texto)));
+}
+
+async function restaurarPerfil(b: Backup): Promise<number> {
   const perfilId = await criarPerfil(b.perfil.nome, b.perfil.idioma, b.perfil.horas_dia);
   if (!b.plano) return perfilId;
   const planoJson = PlanoSchema.parse(b.plano);
@@ -176,6 +187,118 @@ export async function importarBackup(texto: string): Promise<number> {
   }
   return perfilId;
 }
+
+// ---------- backup completo: todos os perfis, o acervo, os prompts e a aparência ----------
+
+const TemaSchema = z.object({ materia: z.string(), assunto: z.string() });
+const BackupCompletoSchema = z.object({
+  schema: z.literal("preparador.backupCompleto/1"),
+  criadoEm: z.string(),
+  perfis: z.array(BackupSchema),
+  acervo: z.object({
+    temas: z.array(TemaSchema.extend({ detalhe: z.string().nullable(), objetivo: z.string().nullable(), banca: z.string().nullable() })),
+    aulas: z.array(TemaSchema.extend({ titulo: z.string(), url: z.string(), canal: z.string().nullable(), duracao_min: z.number().nullable(), status_link: z.string() })),
+    questoes: z.array(TemaSchema.extend({ tipo: z.enum(["CE", "ME"]), enunciado: z.string(), alternativas: z.string().nullable(), gabarito: z.string(),
+      explicacao: z.string().nullable(), fonte: z.string().nullable(), gabarito_oficial: z.number() })),
+    textos: z.array(z.object({ tema: TemaSchema.extend({ detalhe: z.string().nullable() }), criadaEm: z.string(), lidaEm: z.string().nullable(), aula: z.unknown() })),
+  }),
+  prompts: z.array(z.object({ chave: z.string(), template: z.string() })),
+  config: z.object({ tema: z.string().nullable(), cor: z.string().nullable() }),
+});
+type BackupCompleto = z.infer<typeof BackupCompletoSchema>;
+
+export async function exportarTudo(): Promise<string> {
+  const perfis: Backup[] = [];
+  const nosPerfis = new Set<string>();
+  for (const p of await listarPerfis()) {
+    perfis.push(await dadosPerfil(p.id));
+    const plano = await carregarPlano(p.id);
+    if (plano) for (const t of await listarTextos(p.id, plano)) nosPerfis.add(t.id);
+  }
+  // aulas em texto que não foram junto de nenhum perfil (perfil excluído ou assunto que saiu do plano)
+  await completarTemas();
+  const textos: BackupCompleto["acervo"]["textos"] = [];
+  for (const t of await todosTextos()) {
+    if (nosPerfis.has(t.id) || !t.tema) continue;
+    const r = await lerTexto(t.id);
+    if (r) textos.push({ tema: t.tema, criadaEm: t.criadaEm, lidaEm: t.lidaEm, aula: r.aula });
+  }
+  const out: BackupCompleto = {
+    schema: "preparador.backupCompleto/1",
+    criadoEm: new Date().toISOString(),
+    perfis,
+    acervo: {
+      temas: await select("SELECT materia, assunto, detalhe, objetivo, banca FROM acervo_temas ORDER BY id"),
+      aulas: await select(
+        `SELECT t.materia, t.assunto, a.titulo, a.url, a.canal, a.duracao_min, a.status_link
+           FROM acervo_aulas a JOIN acervo_temas t ON t.id = a.tema_id ORDER BY a.id`,
+      ),
+      questoes: await select(
+        `SELECT t.materia, t.assunto, q.tipo, q.enunciado, q.alternativas, q.gabarito, q.explicacao, q.fonte, q.gabarito_oficial
+           FROM acervo_questoes q JOIN acervo_temas t ON t.id = q.tema_id ORDER BY q.id`,
+      ),
+      textos,
+    },
+    prompts: await select("SELECT chave, template FROM prompts"),
+    config: { tema: await getConfig("tema"), cor: await getConfig("cor") },
+  };
+  return JSON.stringify(out);
+}
+
+/**
+ * Junta um backup completo ao que já existe: os perfis entram como novos e o
+ * acervo é mesclado sem repetir. Valida o arquivo inteiro antes de gravar.
+ */
+export async function importarTudo(texto: string) {
+  const b = BackupCompletoSchema.parse(JSON.parse(texto));
+  const contar = async () =>
+    (await first<{ n: number }>(
+      "SELECT (SELECT COUNT(*) FROM acervo_temas) + (SELECT COUNT(*) FROM acervo_aulas) + (SELECT COUNT(*) FROM acervo_questoes) AS n",
+    ))!.n;
+  const antes = await contar();
+  for (const p of b.perfis) await restaurarPerfil(p);
+
+  const { temas, aulas, questoes } = b.acervo;
+  if (temas.length)
+    await insertMany("acervo_temas", ["materia", "assunto", "detalhe", "objetivo", "banca"],
+      temas.map((t) => [t.materia, t.assunto, t.detalhe, t.objetivo, t.banca]), { ignorar: true });
+  const chave = (t: { materia: string; assunto: string }) => `${t.materia}\u0000${t.assunto}`;
+  const tid = new Map(
+    (await select<{ id: number; materia: string; assunto: string }>("SELECT id, materia, assunto FROM acervo_temas")).map((t) => [chave(t), t.id]),
+  );
+  const comTema = <T extends { materia: string; assunto: string }>(l: T[]) => l.filter((x) => tid.has(chave(x)));
+  if (aulas.length)
+    await insertMany("acervo_aulas", ["tema_id", "titulo", "url", "canal", "duracao_min", "status_link"],
+      comTema(aulas).map((a) => [tid.get(chave(a)), a.titulo, a.url, a.canal, a.duracao_min, a.status_link]), { ignorar: true });
+  if (questoes.length)
+    await insertMany("acervo_questoes",
+      ["tema_id", "tipo", "enunciado", "alternativas", "gabarito", "explicacao", "fonte", "gabarito_oficial"],
+      comTema(questoes).map((q) => [tid.get(chave(q)), q.tipo, q.enunciado, q.alternativas, q.gabarito, q.explicacao, q.fonte, q.gabarito_oficial]),
+      { ignorar: true });
+  const acervo = (await contar()) - antes;
+
+  const ja = new Set((await todosTextos()).filter((t) => t.tema).map((t) => `${chave(t.tema!)}|${t.titulo}`));
+  let textos = 0;
+  for (const t of b.acervo.textos) {
+    const r = AulaTextoSchema.safeParse(t.aula);
+    if (!r.success || ja.has(`${chave(t.tema)}|${r.data.titulo}`)) continue;
+    ja.add(`${chave(t.tema)}|${r.data.titulo}`);
+    await salvarTextoAcervo(t.tema, r.data, { criadaEm: t.criadaEm, lidaEm: t.lidaEm });
+    textos++;
+  }
+
+  for (const p of b.prompts) if (p.chave in PROMPTS) await salvarTemplate(p.chave as ChavePrompt, p.template);
+  if (b.config.tema) await setConfig("tema", b.config.tema);
+  if (b.config.cor) await setConfig("cor", b.config.cor);
+  return { perfis: b.perfis.length, acervo, textos };
+}
+
+/** Abre "Salvar como" e grava o backup. Devolve o caminho, ou null se cancelou. */
+export const salvarBackupEmArquivo = (conteudo: string) =>
+  invoke<string | null>("backup_salvar", { conteudo, nome: `preparador-backup-${new Date().toISOString().slice(0, 10)}.json` });
+
+/** Abre o seletor de arquivo e devolve o conteúdo, ou null se cancelou. */
+export const abrirBackupDeArquivo = () => invoke<string | null>("backup_abrir");
 
 /** Perfil de exemplo com o plano da PC/SE (dados do protótipo original). */
 export async function criarPerfilDemo(): Promise<number> {

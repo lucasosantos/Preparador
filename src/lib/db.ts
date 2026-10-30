@@ -22,7 +22,7 @@ export async function execute(sql: string, params: unknown[] = []) {
 }
 
 /** INSERT de várias linhas por comando, em blocos, para evitar uma chamada IPC por linha. */
-export async function insertMany(tabela: string, colunas: string[], linhas: unknown[][]) {
+export async function insertMany(tabela: string, colunas: string[], linhas: unknown[][], { ignorar = false } = {}) {
   const porBloco = Math.max(1, Math.floor(900 / colunas.length));
   for (let i = 0; i < linhas.length; i += porBloco) {
     const bloco = linhas.slice(i, i + porBloco);
@@ -34,7 +34,7 @@ export async function insertMany(tabela: string, colunas: string[], linhas: unkn
       });
       return `(${ph.join(", ")})`;
     });
-    await execute(`INSERT INTO ${tabela} (${colunas.join(", ")}) VALUES ${valores.join(", ")}`, params);
+    await execute(`INSERT ${ignorar ? "OR IGNORE " : ""}INTO ${tabela} (${colunas.join(", ")}) VALUES ${valores.join(", ")}`, params);
   }
 }
 

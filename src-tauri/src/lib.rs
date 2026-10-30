@@ -1,3 +1,4 @@
+mod backup;
 mod biblioteca;
 mod mcp;
 
@@ -40,6 +41,7 @@ pub fn ponte_mcp() {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(
             tauri_plugin_sql::Builder::new()
@@ -54,7 +56,9 @@ pub fn run() {
             mcp::mcp_configurar,
             biblioteca::biblioteca_ler,
             biblioteca::biblioteca_gravar,
-            biblioteca::biblioteca_remover
+            biblioteca::biblioteca_remover,
+            backup::backup_salvar,
+            backup::backup_abrir
         ])
         .setup(|app| {
             mcp::iniciar(app.handle());

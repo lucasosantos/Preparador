@@ -1,7 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { app } from "$lib/app.svelte";
-  import { criarPerfilDemo } from "$lib/backup";
+  import { app, type Cor, type Tema } from "$lib/app.svelte";
+  import { abrirBackupDeArquivo, criarPerfilDemo, exportarTudo, importarTudo, salvarBackupEmArquivo } from "$lib/backup";
+  import { getConfig } from "$lib/db";
   import { IDIOMAS, atualizarPerfil, criarPerfil, excluirPerfil, type Perfil } from "$lib/perfis";
   import { desvincularTextosDoPerfil } from "$lib/textos";
 
@@ -43,6 +44,36 @@
     await app.escolherPerfil(id);
     criandoDemo = false;
     goto("/hoje");
+  }
+
+  let backupMsg = $state("");
+  let ocupado = $state(false);
+  async function exportarBackup() {
+    ocupado = true;
+    try {
+      const caminho = await salvarBackupEmArquivo(await exportarTudo());
+      if (caminho) backupMsg = `Backup salvo em ${caminho}.`;
+    } catch (e) {
+      backupMsg = `Não foi possível salvar: ${e instanceof Error ? e.message : e}`;
+    }
+    ocupado = false;
+  }
+  async function importarBackup() {
+    ocupado = true;
+    try {
+      const texto = await abrirBackupDeArquivo();
+      if (texto != null) {
+        const r = await importarTudo(texto);
+        await app.mudarTema(((await getConfig("tema")) as Tema) ?? app.tema);
+        await app.mudarCor(((await getConfig("cor")) as Cor) ?? app.cor);
+        await app.recarregarPerfis();
+        if (app.perfilId == null && app.perfis.length) await app.escolherPerfil(app.perfis[0].id);
+        backupMsg = `${r.perfis} perfil(is) importado(s); ${r.acervo + r.textos} item(ns) novo(s) no acervo.`;
+      }
+    } catch (e) {
+      backupMsg = `Backup inválido: ${e instanceof Error ? e.message.slice(0, 200) : e}`;
+    }
+    ocupado = false;
   }
 
   async function excluir(id: number) {
@@ -135,6 +166,16 @@
       <p class="tip">Junta os planos de dois perfis num perfil novo, mantendo o progresso de cada um.</p>
     </section>
   {/if}
+
+  <section class="card">
+    <h3>Backup completo</h3>
+    <p class="tip">Leva todos os perfis, o acervo, os prompts editados e a aparência para um arquivo. Importar em outro computador junta tudo ao que já existe; os perfis entram como novos.</p>
+    <div class="row">
+      <button type="button" onclick={exportarBackup} disabled={ocupado}>Exportar para arquivo…</button>
+      <button type="button" onclick={importarBackup} disabled={ocupado}>Importar de arquivo…</button>
+    </div>
+    {#if backupMsg}<p class="small muted" role="status">{backupMsg}</p>{/if}
+  </section>
 
   <section class="card">
     <h3>Perfil de exemplo</h3>

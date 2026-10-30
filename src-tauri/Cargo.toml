@@ -24,6 +24,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-http = "2"
+tauri-plugin-dialog = "2"
 # servidor MCP local (HTTP em 127.0.0.1) e ponte stdio para o Claude Desktop
 tiny_http = "0.12"
 ureq = { version = "2", default-features = false }
