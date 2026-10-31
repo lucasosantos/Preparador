@@ -10,7 +10,8 @@ export type ChavePrompt =
   | "aulas.substituto"
   | "aulas.texto"
   | "aulas.apostila"
-  | "questoes.gerar";
+  | "questoes.gerar"
+  | "simulados.gerar";
 
 type Definicao = { nome: string; descricao: string; variaveis: string[]; padrao: string };
 
@@ -359,6 +360,36 @@ Responda APENAS com este JSON, sem texto antes ou depois:
   "schema": "preparador.questoes/1",
   "questoes": [
     { "materiaId": "id", "assuntoId": "id", "tipo": "CE", "enunciado": "texto", "alternativas": null, "gabarito": "C", "explicacao": "explicação curta" }
+  ]
+}`,
+  },
+  "simulados.gerar": {
+    nome: "Gerar simulado",
+    descricao: "Cria um simulado completo no estilo da banca, com a quantidade de questões de cada matéria.",
+    variaveis: ["quantidade", "tipo", "banca", "objetivo", "idioma", "distribuicao", "assuntos"],
+    padrao: `Você é examinador da banca {{banca}}. Monte um SIMULADO inédito de {{quantidade}} questões do tipo {{tipo}} para a prova {{objetivo}}, em {{idioma}}, o mais parecido possível com uma prova real dessa banca.
+
+Distribuição obrigatória (matéria: número de questões):
+{{distribuicao}}
+
+Regras:
+1. Respeite exatamente a quantidade de cada matéria e entregue as questões agrupadas por matéria, na ordem acima.
+2. Dentro de cada matéria, espalhe as questões por assuntos diferentes da lista abaixo, priorizando os mais cobrados pela banca. Não repita o mesmo ponto em duas questões.
+3. Misture dificuldades como numa prova real: cerca de 30% fáceis, 50% médias e 20% difíceis.
+4. Use a legislação, a jurisprudência e o conhecimento vigentes. Não copie questões de provas reais.
+5. "CE": item para julgar CERTO ou ERRADO, com "gabarito" "C" ou "E"; equilibre certos e errados, com as pegadinhas típicas da banca nos errados.
+   "ME": 4 ou 5 alternativas em "alternativas" (sem letras no texto) e "gabarito" com a letra da correta ("A", "B"...); varie a posição da correta.
+6. "explicacao": por que o gabarito é esse, citando a base legal ou o conceito, e o erro do item quando for errado.
+7. Se não couber tudo em uma resposta, divida em partes, cada parte como um JSON completo. Eu peço "continue".
+
+Assuntos (materiaId | assuntoId | nome):
+{{assuntos}}
+
+Responda APENAS com este JSON, sem texto antes ou depois:
+{
+  "schema": "preparador.questoes/1",
+  "questoes": [
+    { "materiaId": "id", "assuntoId": "id", "tipo": "CE", "enunciado": "texto", "alternativas": null, "gabarito": "C", "explicacao": "explicação" }
   ]
 }`,
   },

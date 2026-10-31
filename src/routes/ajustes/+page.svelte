@@ -1,5 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
+  import { appConfigDir, appDataDir, join } from "@tauri-apps/api/path";
+  import { revealItemInDir } from "@tauri-apps/plugin-opener";
   import { onMount } from "svelte";
   import { CORES, app, type Tema } from "$lib/app.svelte";
   import { exportarPerfil, importarBackup } from "$lib/backup";
@@ -116,6 +118,34 @@
   const cmdCode = $derived(mcp ? `claude mcp add --transport http preparador ${urlMcp} --header "Authorization: Bearer ${mcp.token}"` : "");
   async function copiarCfg(t: string) {
     aviso("mcp", (await copiar(t)) ? "Copiado." : "Selecione e copie manualmente.");
+  }
+
+  // ---------- onde ficam os arquivos ----------
+  // caminhos iguais aos do lado Rust: o banco fica na pasta de configuração do app
+  // (tauri-plugin-sql) e as aulas em texto em biblioteca/ na pasta de dados (biblioteca.rs)
+  type Local = { nome: string; desc: string; caminho: string; pasta: boolean };
+  let locais = $state<Local[]>([]);
+  onMount(async () => {
+    try {
+      const [cfg, dados] = await Promise.all([appConfigDir(), appDataDir()]);
+      locais = [
+        { nome: "Banco de dados", desc: "Perfis, planos, aulas, questões, progresso e anotações", caminho: await join(cfg, "preparador.db"), pasta: false },
+        { nome: "Aulas em texto", desc: "Um arquivo por aula e o índice biblioteca.json", caminho: await join(dados, "biblioteca"), pasta: true },
+        { nome: "Configuração do MCP", desc: "Porta e token do servidor para agentes de IA", caminho: await join(cfg, "mcp.json"), pasta: false },
+      ];
+    } catch {
+      locais = [];
+    }
+  });
+  async function mostrarLocal(l: Local) {
+    try {
+      await revealItemInDir(l.caminho);
+    } catch {
+      aviso("locais", l.pasta ? "A pasta ainda não existe: ela é criada quando a primeira aula em texto é salva." : "O arquivo ainda não existe.");
+    }
+  }
+  async function copiarLocal(l: Local) {
+    aviso("locais", (await copiar(l.caminho)) ? "Caminho copiado." : "Selecione e copie manualmente.");
   }
 
   // ---------- zerar ----------
@@ -285,6 +315,31 @@
   </section>
 
   <section class="card">
+    <h3>Onde ficam seus dados</h3>
+    <p class="tip">
+      Tudo fica só neste computador, nestes locais. Para levar seus dados para outro computador, use o Backup acima em vez
+      de copiar os arquivos com o app aberto.
+    </p>
+    {#if !locais.length}
+      <p class="err">Não foi possível descobrir as pastas do app.</p>
+    {/if}
+    {#each locais as l (l.caminho)}
+      <div class="local">
+        <div class="local-info">
+          <strong>{l.nome}</strong>
+          <span class="small muted">{l.desc}</span>
+          <code>{l.caminho}</code>
+        </div>
+        <div class="row">
+          <button type="button" class="small" onclick={() => mostrarLocal(l)}>Mostrar na pasta</button>
+          <button type="button" class="small" onclick={() => copiarLocal(l)}>Copiar caminho</button>
+        </div>
+      </div>
+    {/each}
+    {#if msg.locais}<p class="tip" role="status">{msg.locais}</p>{/if}
+  </section>
+
+  <section class="card">
     <h3>Apagar progresso</h3>
     <p class="tip">Apaga sessões, conclusões, revisões e respostas deste perfil. Mantém o plano, as aulas e as questões.</p>
     <div class="row">
@@ -314,4 +369,7 @@
   .pill { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-soft); border-radius: 99px; padding: 2px 4px 2px 10px; font-size: 14px; }
   .pill button { border: 0; background: none; padding: 0 5px; font-size: 14px; color: var(--muted); }
   .pill button:hover { color: var(--fg); }
+  .local { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .local-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 320px; }
+  .local code { font: 13px var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; overflow-wrap: anywhere; user-select: all; }
 </style>

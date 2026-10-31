@@ -123,7 +123,7 @@
         {/each}
       </ul>
       {#if excluirArmado != null}
-        <p class="tip">Excluir apaga o plano, as aulas, as questões e todo o progresso deste perfil.</p>
+        <p class="tip">Excluir apaga o plano, as aulas, as questões, as anotações e todo o progresso deste perfil.</p>
       {/if}
     </section>
   {/if}

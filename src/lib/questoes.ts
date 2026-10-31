@@ -42,14 +42,23 @@ function montar(l: Linha): Questao {
   };
 }
 
-const SELECT_QUESTOES = `
+const BASE_QUESTOES = `
   SELECT q.id, q.materia_id, q.assunto_id, q.tipo, q.enunciado, q.alternativas, q.gabarito, q.explicacao, q.origem,
          q.fonte, q.gabarito_oficial,
          r.resposta AS r_resposta, r.acertou AS r_acertou, r.data AS r_data
     FROM questoes q
     JOIN materias m ON m.id = q.materia_id
-    LEFT JOIN respostas r ON r.id = (SELECT MAX(id) FROM respostas WHERE questao_id = q.id AND perfil_id = q.perfil_id)
+    LEFT JOIN respostas r ON r.id = (SELECT MAX(id) FROM respostas WHERE questao_id = q.id AND perfil_id = q.perfil_id)`;
+const SELECT_QUESTOES = `${BASE_QUESTOES}
    WHERE q.perfil_id = $1 AND m.plano_id = $2`;
+
+/** Questões do perfil pelos ids, na ordem pedida. */
+export async function questoesPorIds(perfilId: number, ids: number[]): Promise<Questao[]> {
+  if (!ids.length) return [];
+  const rs = (await select<Linha>(`${BASE_QUESTOES} WHERE q.perfil_id = $1 AND q.id IN (${ids.map((_, i) => `$${i + 2}`).join(", ")})`, [perfilId, ...ids])).map(montar);
+  const porId = new Map(rs.map((q) => [q.id, q]));
+  return ids.map((id) => porId.get(id)).filter((q): q is Questao => !!q);
+}
 
 export async function listarQuestoes(perfilId: number, planoId: number, filtro: { materiaId?: number | null; assuntoId?: number | null } = {}) {
   const params: unknown[] = [perfilId, planoId];

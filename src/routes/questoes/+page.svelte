@@ -77,6 +77,7 @@
       <div class="row">
         <a class="btn" href={`/importar?aba=questoes${materiaId ? `&materia=${materiaId}` : ""}${assuntoId ? `&assunto=${assuntoId}` : ""}`}>Gerar questões com IA</a>
         <a class="btn" href={`/importar?aba=questoes&modo=extrair${materiaId ? `&materia=${materiaId}` : ""}`}>Extrair de prova anterior</a>
+        <a class="btn" href="/simulados">Montar simulado</a>
       </div>
     </section>
 

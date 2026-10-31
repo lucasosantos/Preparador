@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { z } from "zod";
+import { exportarPaginas, importarPaginas, TIPOS } from "./anotacoes";
 import { importarAulas, listarAulas, previaAulas } from "./aulas";
 import { execute, first, getConfig, insertMany, select, setConfig } from "./db";
 import { AulaTextoSchema, AulasSchema, PlanoSchema, QuestoesSchema, type PlanoJson } from "./esquemas";
@@ -7,6 +8,7 @@ import { criarPerfil, listarPerfis } from "./perfis";
 import { carregarPlano, importarPlano, salvarRevisoes, type Plano } from "./planos";
 import { PROMPTS, salvarTemplate, type ChavePrompt } from "./prompts";
 import { importarQuestoes, listarQuestoes, previaQuestoes } from "./questoes";
+import { exportarSimulados, importarSimulados } from "./simulados";
 import { completarTemas, lerTexto, listarTextos, salvarTexto, salvarTextoAcervo, todosTextos } from "./textos";
 import demo from "./demo/pcse.json";
 
@@ -58,6 +60,12 @@ const BackupSchema = z.object({
   conclusoes: z.array(z.object({ assunto: z.string(), data: z.string() })),
   revisoesAgendadas: z.array(z.object({ assunto: z.string(), intervalo: z.number(), data_prevista: z.string(), feita_em: z.string().nullable() })),
   textos: z.array(z.object({ criadaEm: z.string(), lidaEm: z.string().nullable(), aula: z.unknown() })).default([]),
+  paginas: z.array(z.object({ ref: z.number(), pai: z.number().nullable(), titulo: z.string(), icone: z.string().nullable(),
+    materia: z.string().nullable(), assunto: z.string().nullable(), criado_em: z.string(), atualizado_em: z.string(),
+    blocos: z.array(z.object({ tipo: z.enum(TIPOS), texto: z.string(), nivel: z.number(), marcado: z.number() })) })).default([]),
+  simulados: z.array(z.object({ titulo: z.string(), origem: z.enum(["banco", "ia"]), tempo_min: z.number().nullable(), criado_em: z.string(),
+    iniciado_em: z.string().nullable(), finalizado_em: z.string().nullable(), duracao_seg: z.number().nullable(),
+    itens: z.array(z.object({ enunciado: z.string(), resposta: z.string().nullable(), acertou: z.number().nullable() })) })).default([]),
 });
 
 type Backup = z.infer<typeof BackupSchema>;
@@ -85,6 +93,8 @@ async function dadosPerfil(perfilId: number): Promise<Backup> {
     conclusoes: [],
     revisoesAgendadas: [],
     textos: [],
+    paginas: await exportarPaginas(perfilId, plano),
+    simulados: await exportarSimulados(perfilId),
   };
   if (plano) {
     const provaIdx = new Map(plano.provas.map((p, i) => [p.id, i]));
@@ -138,7 +148,10 @@ export async function importarBackup(texto: string): Promise<number> {
 
 async function restaurarPerfil(b: Backup): Promise<number> {
   const perfilId = await criarPerfil(b.perfil.nome, b.perfil.idioma, b.perfil.horas_dia);
-  if (!b.plano) return perfilId;
+  if (!b.plano) {
+    await importarPaginas(perfilId, b.paginas, null);
+    return perfilId;
+  }
   const planoJson = PlanoSchema.parse(b.plano);
   // reconstrói os vínculos assunto ↔ prova no formato do plano
   const provasPorAssunto = new Map<string, string[]>();
@@ -185,6 +198,8 @@ async function restaurarPerfil(b: Backup): Promise<number> {
     if (r.success && assuntoId)
       await salvarTexto(perfilId, { materiaId: plano.assunto.get(assuntoId)!.materia_id, assuntoId }, r.data, { criadaEm: t.criadaEm, lidaEm: t.lidaEm });
   }
+  await importarSimulados(perfilId, b.simulados);
+  await importarPaginas(perfilId, b.paginas, plano);
   return perfilId;
 }
 

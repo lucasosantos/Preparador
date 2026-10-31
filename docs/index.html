@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Preparador</title>
-<meta name="description" content="Organizador de estudos gratuito para concursos, ENEM, vestibulares e processos seletivos. Gere seu plano a partir do edital com a IA que você já usa.">
+<meta name="description" content="Organizador de estudos gratuito para concursos, ENEM, vestibulares e processos seletivos. Gere seu plano a partir do edital com a IA que você já usa, faça simulados com cronômetro e organize suas anotações.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -120,6 +120,28 @@ section.bloco { padding: 56px 0; border-top: 1px solid var(--line); }
 .cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
 .cartao p { color: var(--muted); font-size: 15px; }
 .cartao .quando { font: 500 12px var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+.cartoes.quatro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .cartoes.quatro { grid-template-columns: minmax(0, 1fr); } }
+.cartao ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+
+/* ilustrações dos recursos */
+.demo { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.demo .linha { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.demo .chip { font: 500 11px var(--mono); padding: 2px 8px; border-radius: 99px; background: var(--surface); color: var(--muted); white-space: nowrap; }
+.demo .chip.alerta { background: var(--gold-soft); color: var(--gold); }
+.mapa-q { display: flex; flex-wrap: wrap; gap: 4px; }
+.mapa-q i { font: 500 10px/22px var(--mono); font-style: normal; width: 24px; text-align: center; border-radius: 5px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.mapa-q i.ok { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--fg); }
+.mapa-q i.atual { outline: 2px solid var(--fg); outline-offset: 1px; }
+.demo .escolha { justify-content: flex-start; }
+.alt-mini { min-width: 72px; text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; background: var(--surface); }
+.alt-mini.on { border-color: var(--accent); background: var(--accent-soft); }
+.nota h4 { margin: 0; font: 800 17px var(--display); }
+.nota .item { display: flex; gap: 6px; align-items: baseline; }
+.nota .item::before { content: "•"; color: var(--muted); }
+.nota .item.tarefa::before { content: ""; width: 10px; height: 10px; border: 1.5px solid var(--accent); background: var(--accent); border-radius: 3px; flex: none; align-self: center; }
+.nota .mencao { color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 0 4px; font-weight: 600; white-space: nowrap; }
+.nota .citacao { border-left: 3px solid var(--accent); padding-left: 8px; color: var(--muted); font-style: italic; }
 
 /* guia */
 .guia { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; }
@@ -163,6 +185,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     <a class="marca" href="#"><i aria-hidden="true"></i>Preparador</a>
     <nav aria-label="Seções">
       <a href="#como-funciona">Como funciona</a>
+      <a href="#recursos">Recursos</a>
       <a href="#instalar">Instalar</a>
       <a href="#guia">Guia</a>
       <a href="#claude">Claude (MCP)</a>
@@ -180,14 +203,15 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <h1>Seu edital vira um plano de estudos. A IA faz a parte chata.</h1>
         <p class="lead">
           O Preparador monta seu plano a partir do PDF do edital, organiza o que estudar a cada dia, agenda revisões,
-          guarda aulas do YouTube e questões por assunto. Você usa a IA que já tem: ChatGPT, Claude, Gemini.
+          guarda aulas e questões por assunto, aplica simulados com cronômetro e reúne suas anotações.
+          Você usa a IA que já tem: ChatGPT, Claude, Gemini.
         </p>
         <!-- links de download atualizados por scripts/release.sh -->
         <div class="botoes">
-          <a class="btn primario" id="dl-windows" href="https://github.com/lucasosantos/Preparador/releases/download/0.3.0/Preparador_0.3.0_x64-setup.exe">Baixar para Windows <small>.exe</small></a>
-          <a class="btn" id="dl-linux" href="https://github.com/lucasosantos/Preparador/releases/download/0.3.0/Preparador_0.3.0_amd64.AppImage">Baixar para Linux <small>AppImage</small></a>
+          <a class="btn primario" id="dl-windows" href="https://github.com/lucasosantos/Preparador/releases/download/0.4.0/Preparador_0.4.0_x64-setup.exe">Baixar para Windows <small>.exe</small></a>
+          <a class="btn" id="dl-linux" href="https://github.com/lucasosantos/Preparador/releases/download/0.4.0/Preparador_0.4.0_amd64.AppImage">Baixar para Linux <small>AppImage</small></a>
         </div>
-        <p class="aviso-dl muted" id="dl-aviso">Versão 0.3.0 · Windows 10 e 11, Linux 64 bits</p>
+        <p class="aviso-dl muted" id="dl-aviso">Versão 0.4.0 · Windows 10 e 11, Linux 64 bits</p>
         <div class="selos">
           <span class="selo">gratuito</span>
           <span class="selo">seus dados ficam no seu computador</span>
@@ -199,7 +223,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <div class="barra" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="corpo" aria-hidden="true">
           <div class="lado">
-            <span class="on">Plano do dia</span><span>Aulas</span><span>Questões</span><span>Progresso</span><span>Importar da IA</span><span>Ajustes</span>
+            <span class="on">Plano do dia</span><span>Aulas</span><span>Questões</span><span>Simulados</span><span>Anotações</span><span>Progresso</span><span>Importar da IA</span>
           </div>
           <div class="tela">
             <div class="mini-stats">
@@ -273,6 +297,51 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     </div>
   </section>
 
+  <section class="bloco" id="recursos">
+    <div class="wrap">
+      <div class="cabeca">
+        <div class="eyebrow">Além do plano</div>
+        <h2>Treine como na prova e guarde o que aprendeu</h2>
+        <p>Tudo fica ligado às matérias e aos assuntos do seu plano, e vai junto no backup.</p>
+      </div>
+      <div class="cartoes quatro">
+        <div class="cartao">
+          <div class="demo" aria-hidden="true">
+            <div class="linha"><b>Simulado 31/10</b><span class="chip alerta">48:12</span></div>
+            <div class="mapa-q"><i class="ok">1</i><i class="ok">2</i><i class="ok">3</i><i class="ok atual">4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i></div>
+            <div>A prisão temporária pode ser decretada de ofício pelo juiz.</div>
+            <div class="linha escolha"><span class="alt-mini">Certo</span><span class="alt-mini on">Errado</span></div>
+          </div>
+          <span class="quando">Simulados</span>
+          <h3>Modo prova, com cronômetro</h3>
+          <p>Monte com as questões do seu banco, divididas pelo peso das matérias, ou peça à IA um simulado inédito no estilo da banca. O gabarito só aparece no fim, com a nota, o tempo e o desempenho por matéria.</p>
+        </div>
+        <div class="cartao">
+          <div class="demo nota" aria-hidden="true">
+            <h4>📘 Resumo: Inquérito policial</h4>
+            <div class="item">Procedimento administrativo, inquisitivo e sigiloso</div>
+            <div class="item">Prazos: ver <span class="mencao">↗ Prazos do CPP</span></div>
+            <div class="item tarefa">Refazer questões de <span class="mencao"># Ação penal</span></div>
+            <div class="citacao">O delegado não pode arquivar o inquérito.</div>
+          </div>
+          <span class="quando">Anotações</span>
+          <h3>Páginas em blocos, do seu jeito</h3>
+          <p>Resumos com títulos, listas, tarefas, citações e código, organizados em páginas e subpáginas. Digite @ para mencionar outra página ou um assunto do plano. A anotação vinculada a um assunto aparece junto dele no dia de estudo.</p>
+        </div>
+        <div class="cartao">
+          <span class="quando">Aulas em texto</span>
+          <h3>Sem vídeo bom? A IA escreve a aula</h3>
+          <p>Para assuntos sem aula boa no YouTube, a IA escreve uma aula pensada para a sua prova, com os pontos que a banca cobra e as fontes no fim. Tem apostila em PDF? A IA separa o conteúdo pelos assuntos do plano.</p>
+        </div>
+        <div class="cartao">
+          <span class="quando">Acervo</span>
+          <h3>Nada se perde entre um plano e outro</h3>
+          <p>Toda aula, questão e aula em texto que você reúne fica guardada, mesmo depois de trocar de plano ou excluir o perfil. Ao montar um plano novo, o Preparador sugere o que dá para reaproveitar nos assuntos parecidos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="bloco" id="instalar">
     <div class="wrap">
       <div class="cabeca">
@@ -322,9 +391,11 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
           <a href="#p-dia">3. Plano do dia</a>
           <a href="#p-aulas">4. Aulas</a>
           <a href="#p-questoes">5. Questões</a>
-          <a href="#p-edital-saiu">6. Saiu o edital</a>
-          <a href="#p-unir">7. Duas provas</a>
-          <a href="#p-ajustes">8. Ajustes e backup</a>
+          <a href="#p-simulados">6. Simulados</a>
+          <a href="#p-anotacoes">7. Anotações</a>
+          <a href="#p-edital-saiu">8. Saiu o edital</a>
+          <a href="#p-unir">9. Duas provas</a>
+          <a href="#p-ajustes">10. Ajustes e backup</a>
         </nav>
         <div class="passos">
           <div class="passo" id="p-perfil">
@@ -351,13 +422,14 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
             <ul>
               <li>Marque <b>Estudei</b> e ajuste os minutos. Isso conta nas horas da semana e na sequência de dias.</li>
               <li>Marque <b>Terminei este assunto</b> para avançar. O assunto volta como <b>revisão</b> 1, 7 e 30 dias depois.</li>
-              <li>Dia sem matérias (o domingo, por padrão) vira dia de <b>simulado</b> misto.</li>
+              <li>Dia sem matérias (o domingo, por padrão) vira dia de <b>simulado</b> misto, ou de um simulado completo com cronômetro.</li>
+              <li>Cada sessão mostra as <b>anotações</b> do assunto e um botão para criar uma nova.</li>
               <li>Estudou algo fora do plano? Use <b>Registrar estudo fora do plano</b>.</li>
             </ul>
           </div>
 
           <div class="passo" id="p-aulas">
-            <h3><span>04</span>Encontre aulas no YouTube</h3>
+            <h3><span>04</span>Encontre aulas no YouTube ou em texto</h3>
             <ol>
               <li>Em <b>Importar da IA → Aulas do YouTube</b>, copie o prompt. Ele já leva a lista dos seus assuntos e o idioma do perfil.</li>
               <li>Use uma IA <b>com busca na web</b>, para ela achar vídeos de verdade.</li>
@@ -365,6 +437,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
               <li>Na tela <b>Aulas</b>, clique em <b>Verificar links</b>. Vídeos removidos ganham o botão <b>Pedir substituto</b>.</li>
             </ol>
             <p class="muted">Você também pode cadastrar uma aula à mão, colando o link.</p>
+            <p><b>Sem vídeo bom?</b> Em <b>Importar da IA → Aulas</b>, use <b>Gerar aula em texto</b>: a IA escreve uma aula do assunto para o seu perfil e as provas do plano, com as fontes no fim. Com <b>Usar minha apostila</b>, anexe o PDF e a IA divide o conteúdo pelos assuntos do plano.</p>
           </div>
 
           <div class="passo" id="p-questoes">
@@ -377,24 +450,48 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
             <p>Na tela <b>Questões</b>, filtre por matéria, pelas que você errou ou pelas que ainda não respondeu.</p>
           </div>
 
+          <div class="passo" id="p-simulados">
+            <h3><span>06</span>Faça simulados como na prova</h3>
+            <p>Na tela <b>Simulados</b>, escolha as matérias, o total de questões e, se quiser, o tempo em minutos. Depois, um dos dois caminhos:</p>
+            <ul>
+              <li><b>Do meu banco</b>: o Preparador sorteia entre as questões que você ainda não respondeu, as que errou ou todas, dividindo o total pelo peso das matérias e espalhando pelos assuntos. Antes de começar, você vê quantas saem de cada matéria.</li>
+              <li><b>Gerar com IA</b>: copie o prompt, cole na IA e traga a resposta. As questões entram no seu banco e o simulado começa com elas.</li>
+            </ul>
+            <p>Durante a prova, responda em qualquer ordem e mude de ideia à vontade. As respostas ficam salvas: dá para fechar e continuar depois. Use <kbd>←</kbd> e <kbd>→</kbd> para passar de questão e <kbd>C</kbd>/<kbd>E</kbd> ou <kbd>A</kbd>–<kbd>E</kbd> para responder. Se o tempo acabar, a prova é entregue sozinha.</p>
+            <p>No resultado: percentual de acerto, certas, erradas, em branco, tempo, nota líquida do certo/errado e desempenho por matéria. A revisão mostra o gabarito e a explicação de cada questão, com filtro para só as erradas. <b>Refazer</b> repete as mesmas questões em branco.</p>
+            <div class="dica"><b>Conta no progresso.</b>Ao finalizar, as respostas entram no histórico de cada questão, como se você as tivesse respondido no Banco de questões.</div>
+          </div>
+
+          <div class="passo" id="p-anotacoes">
+            <h3><span>07</span>Organize suas anotações</h3>
+            <p>Na tela <b>Anotações</b>, crie páginas e subpáginas para resumos, mapas de leis e listas de pendências. Cada página é feita de blocos: texto, títulos, listas, listas numeradas, tarefas, citações, código e divisores.</p>
+            <ul>
+              <li><kbd>Enter</kbd> cria um bloco novo, <kbd>Tab</kbd> recua, <kbd>Ctrl</kbd>+<kbd>B</kbd>/<kbd>I</kbd> deixam em negrito ou itálico. A alça <b>⋮⋮</b> ao lado de cada bloco muda o tipo, move ou exclui.</li>
+              <li>Digite <kbd>@</kbd> para mencionar outra página, uma matéria ou um assunto. Se a página ainda não existe, dá para criá-la ali mesmo. No rodapé, <b>Mencionada em</b> mostra quem cita a página.</li>
+              <li>Vincule a página a um assunto: ela aparece junto dele no Plano do dia e nas Aulas.</li>
+            </ul>
+          </div>
+
           <div class="passo" id="p-edital-saiu">
-            <h3><span>06</span>Saiu o edital? Atualize sem perder nada</h3>
+            <h3><span>08</span>Saiu o edital? Atualize sem perder nada</h3>
             <p>Gere o plano de novo no modo <b>Edital publicado</b>. O prompt envia à IA a lista dos assuntos que você já tem, pedindo para reaproveitar os mesmos identificadores. A prévia mostra quantos assuntos mantêm o progresso e avisa se algo seria perdido.</p>
+            <p>Mudou de objetivo? Na tela <b>Acervo</b>, o Preparador procura no que você já reuniu em outros planos as aulas, questões e aulas em texto dos assuntos parecidos, para você trazer para o plano novo.</p>
           </div>
 
           <div class="passo" id="p-unir">
-            <h3><span>07</span>Estude para duas provas ao mesmo tempo</h3>
+            <h3><span>09</span>Estude para duas provas ao mesmo tempo</h3>
             <p>Em <b>Perfis → Unir dois perfis</b>, escolha os dois perfis. O Preparador cria um perfil novo com as provas dos dois, juntando as matérias em comum, e leva o progresso de cada um. Os perfis originais continuam intactos.</p>
           </div>
 
           <div class="passo" id="p-ajustes">
-            <h3><span>08</span>Ajustes e backup</h3>
+            <h3><span>10</span>Ajustes e backup</h3>
             <ul>
               <li><b>Aparência</b>: cor da interface e tema claro ou escuro.</li>
               <li><b>Semana-modelo</b>: troque as matérias de cada dia.</li>
               <li><b>Revisões</b>: mude os intervalos (padrão: 1, 7 e 30 dias).</li>
               <li><b>Prompts</b>: edite os textos que vão para a IA.</li>
-              <li><b>Backup</b>: exporte o perfil inteiro como texto e guarde num arquivo. Restaurar cria um perfil novo.</li>
+              <li><b>Backup</b>: exporte o perfil inteiro, com anotações e simulados, como texto e guarde num arquivo. Restaurar cria um perfil novo.</li>
+              <li><b>Onde ficam seus dados</b>: mostra a pasta do banco de dados e das aulas em texto no seu computador, com botões para abrir a pasta e copiar o caminho.</li>
             </ul>
           </div>
         </div>
@@ -450,7 +547,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
       </details>
       <details>
         <summary>Onde ficam meus dados?</summary>
-        <div><p>Num banco de dados no seu computador. Nada é enviado para servidores do Preparador. O que vai para a IA é só o que você mesmo cola ou anexa na conversa.</p></div>
+        <div>
+          <p>Num banco de dados no seu computador. Nada é enviado para servidores do Preparador. O que vai para a IA é só o que você mesmo cola ou anexa na conversa.</p>
+          <p>Para ver a pasta exata, abra <b>Ajustes → Onde ficam seus dados</b>. Para levar tudo para outro computador, use o backup.</p>
+        </div>
       </details>
       <details>
         <summary>Funciona sem internet?</summary>
@@ -461,6 +561,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <div>
           <p>O botão <b>Verificar links</b> confere no YouTube se cada vídeo existe. Questões geradas ou com gabarito resolvido pela IA ficam marcadas, para você conferir na lei ou no material.</p>
         </div>
+      </details>
+      <details>
+        <summary>Os simulados gerados pela IA são confiáveis?</summary>
+        <div><p>São inéditos e seguem o estilo da banca, mas podem conter erros. Cada questão vem com a explicação do gabarito, citando a lei ou o conceito, para você conferir. Para treinar com questões reais, extraia provas anteriores em <b>Importar da IA → Questões</b> e monte o simulado a partir do seu banco.</p></div>
       </details>
       <details>
         <summary>Posso mudar o plano depois?</summary>

@@ -2,6 +2,7 @@
   import { app } from "$lib/app.svelte";
   import { listarAulas, type Aula } from "$lib/aulas";
   import AulaItem from "$lib/components/AulaItem.svelte";
+  import NotasDoTema from "$lib/components/NotasDoTema.svelte";
   import TextoItem from "$lib/components/TextoItem.svelte";
   import { listarTextos, type ItemBiblioteca } from "$lib/textos";
   import QuestaoCard from "$lib/components/QuestaoCard.svelte";
@@ -196,7 +197,7 @@
     {#if !sessoes.length}
       <section class="card">
         <div class="card-head"><h3>{DIAS[dt.getDay()]}: simulado e descanso</h3><span class="chip">{simulado.length} itens</span></div>
-        <p class="tip">Sem matéria nova. Faça as revisões acima e resolva o simulado misto.</p>
+        <p class="tip">Sem matéria nova. Faça as revisões acima e resolva o simulado misto, ou monte um <a href="/simulados">simulado completo, com cronômetro</a>.</p>
       </section>
       <section class="card">
         <h3>Simulado misto</h3>
@@ -227,6 +228,7 @@
           {#if s.assunto?.detalhe}<span class="small muted">{s.assunto.detalhe}</span>{/if}
           {#if plano.objetivo.tipo === "constancia" && s.assunto}<span class="small muted">Cobrado em {s.assunto.nProvas} de {plano.provas.length} provas</span>{/if}
         </div>
+        <NotasDoTema materiaId={s.materiaId} assuntoId={s.assunto?.id ?? null} />
 
         <details class="bloco" open={!recolhido.aulas} ontoggle={(e) => alternarBloco("aulas", e.currentTarget.open)}>
           <summary>

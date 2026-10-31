@@ -12,6 +12,8 @@
     { href: "/hoje", nome: "Plano do dia" },
     { href: "/aulas", nome: "Aulas" },
     { href: "/questoes", nome: "Questões" },
+    { href: "/simulados", nome: "Simulados" },
+    { href: "/anotacoes", nome: "Anotações" },
     { href: "/progresso", nome: "Progresso" },
     { href: "/acervo", nome: "Acervo" },
     { href: "/importar", nome: "Importar da IA" },
@@ -84,7 +86,7 @@
       </nav>
     </aside>
 
-    <main class="content">
+    <main class="content" class:largo={page.url.pathname.startsWith("/anotacoes")}>
       {@render children()}
     </main>
   </div>
@@ -110,6 +112,7 @@
   nav a[aria-current="page"] { color: var(--fg); background: var(--accent-soft); border-left-color: var(--accent); }
   nav a.disabled { pointer-events: none; opacity: .5; }
   .content { max-width: 860px; width: 100%; margin: 0 auto; padding: 28px 24px 64px; }
+  .content.largo { max-width: 1200px; }
   @media (max-width: 760px) {
     .shell { grid-template-columns: minmax(0, 1fr); }
     aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }

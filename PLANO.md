@@ -89,3 +89,27 @@ Tudo o que passa pelo app fica guardado para concursos futuros, mesmo após troc
 - `scripts/release.sh --versao X.Y.Z` troca a versão; depois do commit, `scripts/release.sh --publicar` cria a tag, faz push e sobe os instaladores numa release em rascunho via `gh`.
 - Instaladores não vão para o git (`release/` no .gitignore); ficam anexados às Releases.
 - GitHub Actions: só `testes.yml`. Página: GitHub Pages servindo `docs/` direto da branch (Settings → Pages → Deploy from a branch → main /docs).
+
+## Anotações
+Páginas em blocos, estilo Notion, por perfil (migração `0005_anotacoes.sql`: `paginas`, `blocos`, `mencoes`).
+- Árvore de páginas/subpáginas (`pai_id`); excluir leva as subpáginas. Página pode ser vinculada a uma matéria ou
+  assunto do plano e aparece junto dele no Plano do dia e nas Aulas (`NotasDoTema`).
+- Blocos: texto, títulos 1–3, lista, lista numerada, tarefa, citação, código, divisor. Ordem fracionária (renumera quando aperta).
+- Texto do bloco em formato inline: `**negrito**`, `_itálico_`, `` `código` ``, `[texto](url)` e menções
+  `[[p:id|Título]]`, `[[m:id|Matéria]]`, `[[a:id|Assunto]]` (o rótulo é cache; na tela vale o nome atual).
+  `mencoes` é derivada do texto e alimenta "Mencionada em".
+- Editor próprio: um `contenteditable` por bloco (`BlocoNota`), conversão DOM ↔ texto em `editorNotas.ts`,
+  gravação em fila com debounce em `EditorPagina`. `@` ou `[[` abre a busca de menções (e cria subpágina).
+- Backup do perfil leva as páginas, com vínculos e menções de matéria/assunto pelo slug.
+- Fora por enquanto: menu `/`, atalhos markdown, callout/toggle, tabelas, imagens, IA/MCP, busca, templates, unir perfis.
+
+## Simulados
+Modo prova (migração `0006_simulados.sql`: `simulados`, `simulado_questoes`); lógica em `src/lib/simulados.ts`.
+- Do banco: matérias escolhidas, total e situação (inéditas, erradas, todas); o total é dividido pelo peso das
+  matérias (maior resto, limitado ao que há em cada uma), com rodízio entre assuntos. Ordem: matérias do plano.
+- Com IA: prompt `simulados.gerar` com a quantidade por matéria; a resposta (`preparador.questoes/1`) entra no
+  banco e o simulado usa essas questões (repetidas são reaproveitadas pelo enunciado).
+- Cronômetro opcional a partir do primeiro acesso; acabou o tempo, entrega. Respostas gravadas a cada clique;
+  o gabarito só aparece ao finalizar, quando as respostas vão também para `respostas`.
+- Resultado: acertos, erros, brancos, nota líquida do certo/errado, tempo e desempenho por matéria; revisão com
+  filtro de erradas/em branco; refazer cria um simulado novo com as mesmas questões. Vai no backup do perfil.

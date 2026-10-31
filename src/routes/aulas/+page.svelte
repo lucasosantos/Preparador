@@ -4,6 +4,7 @@
   import { app } from "$lib/app.svelte";
   import { adicionarAula, existeAula, listarAulas, verificarAula, ytInfo, type Aula } from "$lib/aulas";
   import AulaItem from "$lib/components/AulaItem.svelte";
+  import NotasDoTema from "$lib/components/NotasDoTema.svelte";
   import TextoItem from "$lib/components/TextoItem.svelte";
   import { listarTextos, type ItemBiblioteca } from "$lib/textos";
 
@@ -164,6 +165,7 @@
             <div class="lista">
               {#each lista as a (a.id)}<AulaItem {a} removivel onmudou={carregar} />{/each}
               {#each txt as t (t.id)}<TextoItem {t} removivel onmudou={carregar} />{/each}
+              <NotasDoTema materiaId={m.id} assuntoId={null} todaMateria />
             </div>
           </details>
         {/if}

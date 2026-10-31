@@ -1,0 +1,2 @@
+4dbd3aceb029f0c5faea4cb507f7cfdc52a979b903cfeb2a644481df5635e6a0  Preparador_0.4.0_amd64.AppImage
+42e5157f34ad31ee277977f8fc70e407b92a0828e0c922107b6e7248b5f4d21e  Preparador_0.4.0_x64-setup.exe

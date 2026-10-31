@@ -8,6 +8,7 @@ import { IDIOMAS, criarPerfil, listarPerfis, type Perfil } from "./perfis";
 import { carregarPlano, importarPlano, listaAssuntosPrompt, planoAtualPrompt, previaPlano, resolverRef, type Plano } from "./planos";
 import { PROMPTS, leituraPdfsConstancia, listaProvasAlvo, montarPrompt, type ChavePrompt } from "./prompts";
 import { importarQuestoes, listarQuestoes, previaQuestoes, responder, rotuloGabarito } from "./questoes";
+import { varsSimuladoIa } from "./simulados";
 import {
   concluirAssunto,
   conclusoes,
@@ -786,6 +787,16 @@ async function promptMcp(chave: ChavePrompt, a: Args, ctx: ContextoMcp): Promise
         objetivo: pl.objetivo.nome,
         assuntos: listaAssuntosPrompt(pl, r?.assuntoId ? { assuntoIds: [r.assuntoId] } : r ? { materiaId: r.materiaId } : undefined),
       };
+      break;
+    }
+    case "simulados.gerar": {
+      const pl = plano ?? falha("O perfil ainda não tem plano.");
+      const tipo = (texto(a, "tipo") ?? "CE").toUpperCase();
+      vars = varsSimuladoIa(pl, p!.idioma, {
+        materiaIds: pl.materias.map((m) => m.id),
+        total: Number(texto(a, "quantidade") ?? 30) || 30,
+        tipo: tipo === "MISTO" ? "misto" : tipo === "ME" ? "ME" : "CE",
+      });
       break;
     }
     case "questoes.extrair": {
